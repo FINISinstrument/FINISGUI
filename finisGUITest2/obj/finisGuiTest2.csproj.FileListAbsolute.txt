@@ -1,0 +1,14 @@
+C:\Users\INCTEL MINI PC\Documents\Visual Studio 2005\Projects\finisGuiTest2\finisGuiTest2\bin\Release\finisGuiTest2.exe
+C:\Users\INCTEL MINI PC\Documents\Visual Studio 2005\Projects\finisGuiTest2\finisGuiTest2\bin\Release\finisGuiTest2.pdb
+C:\Users\INCTEL MINI PC\Documents\Visual Studio 2005\Projects\finisGuiTest2\finisGuiTest2\obj\Release\ResolveAssemblyReference.cache
+C:\Users\INCTEL MINI PC\Documents\Visual Studio 2005\Projects\finisGuiTest2\finisGuiTest2\obj\Release\finisGuiTest.Properties.Resources.resources
+C:\Users\INCTEL MINI PC\Documents\Visual Studio 2005\Projects\finisGuiTest2\finisGuiTest2\obj\Release\finisGuiTest2.csproj.GenerateResource.Cache
+C:\Users\INCTEL MINI PC\Documents\Visual Studio 2005\Projects\finisGuiTest2\finisGuiTest2\obj\Release\finisGuiTest2.exe
+C:\Users\INCTEL MINI PC\Documents\Visual Studio 2005\Projects\finisGuiTest2\finisGuiTest2\obj\Release\finisGuiTest2.pdb
+C:\Users\INCTEL MINI PC\Documents\Visual Studio 2005\Projects\finisGuiTest2\finisGuiTest2\bin\Debug\finisGuiTest2.exe
+C:\Users\INCTEL MINI PC\Documents\Visual Studio 2005\Projects\finisGuiTest2\finisGuiTest2\bin\Debug\finisGuiTest2.pdb
+C:\Users\INCTEL MINI PC\Documents\Visual Studio 2005\Projects\finisGuiTest2\finisGuiTest2\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\INCTEL MINI PC\Documents\Visual Studio 2005\Projects\finisGuiTest2\finisGuiTest2\obj\Debug\finisGuiTest.Properties.Resources.resources
+C:\Users\INCTEL MINI PC\Documents\Visual Studio 2005\Projects\finisGuiTest2\finisGuiTest2\obj\Debug\finisGuiTest2.csproj.GenerateResource.Cache
+C:\Users\INCTEL MINI PC\Documents\Visual Studio 2005\Projects\finisGuiTest2\finisGuiTest2\obj\Debug\finisGuiTest2.exe
+C:\Users\INCTEL MINI PC\Documents\Visual Studio 2005\Projects\finisGuiTest2\finisGuiTest2\obj\Debug\finisGuiTest2.pdb

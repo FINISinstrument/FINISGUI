@@ -1,0 +1,9 @@
+C:\FINIS\finisGuiTest2\finisGuiTest2\bin\x64\Debug\finisGuiTest2.exe
+C:\FINIS\finisGuiTest2\finisGuiTest2\bin\x64\Debug\finisGuiTest2.pdb
+C:\FINIS\finisGuiTest2\finisGuiTest2\obj\x64\Debug\finisGuiTest2.csprojResolveAssemblyReference.cache
+C:\FINIS\finisGuiTest2\finisGuiTest2\obj\x64\Debug\finisGuiTest.Form1.resources
+C:\FINIS\finisGuiTest2\finisGuiTest2\obj\x64\Debug\finisGuiTest.Properties.Resources.resources
+C:\FINIS\finisGuiTest2\finisGuiTest2\obj\x64\Debug\finisGuiTest2.csproj.GenerateResource.cache
+C:\FINIS\finisGuiTest2\finisGuiTest2\obj\x64\Debug\finisGuiTest2.csproj.CoreCompileInputs.cache
+C:\FINIS\finisGuiTest2\finisGuiTest2\obj\x64\Debug\finisGuiTest2.exe
+C:\FINIS\finisGuiTest2\finisGuiTest2\obj\x64\Debug\finisGuiTest2.pdb
