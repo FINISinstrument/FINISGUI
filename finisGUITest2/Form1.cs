@@ -411,7 +411,7 @@ namespace FinisGUI
                         DriveInfo myDrive = new DriveInfo("C:\\");
                         driveSpace = (myDrive.AvailableFreeSpace / 1048576) - 500;
                         promptBox.Text += $"Available Disk Space: {driveSpace} Mb\n";
-                        FileInfo file = new FileInfo("C:/FINIS/FinisGUIProject/finisGUITest2/Resources/Example.tif");
+                        FileInfo file = new FileInfo("C:/FINIS/Images/Example.tif");
                         driveSpace = ((driveSpace * 1048576) / file.Length);
                         promptBox.Text += $"Max frames possible: {driveSpace}\n";
 
@@ -683,7 +683,7 @@ namespace FinisGUI
 
                     string FORMAT = "";
                     string FORMATFILE = "";
-                    FORMATFILE = "C:/FINIS/FinisGUIProject/finisGUITest2/Resources/XCAPVideoSetup16Bit30Hz.fmt";
+                    FORMATFILE = "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup16Bit30Hz.fmt";
                     PXD.pxd_PIXCIclose();
                     Thread.Sleep(100);
                     int i = PXD.pxd_PIXCIopen("", FORMAT, FORMATFILE);
@@ -983,7 +983,7 @@ namespace FinisGUI
                     {
                         string FORMAT = "";
                         string FORMATFILE = "";
-                        FORMATFILE = "C:/FINIS/FinisGUIProject/finisGUITest2/Resources/XCAPVideoSetup14Bit15Hz.fmt";
+                        FORMATFILE = "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup14Bit15Hz.fmt";
                         PXD.pxd_PIXCIclose();
                         Thread.Sleep(100);
                         PXD.pxd_PIXCIopen("", FORMAT, FORMATFILE);
@@ -993,7 +993,7 @@ namespace FinisGUI
                     {
                         string FORMAT = "";
                         string FORMATFILE = "";
-                        FORMATFILE = "C:/FINIS/FinisGUIProject/finisGUITest2/Resources/XCAPVideoSetup14Bit30Hz.fmt";
+                        FORMATFILE = "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup14Bit30Hz.fmt";
                         PXD.pxd_PIXCIclose();
                         Thread.Sleep(100);
                         PXD.pxd_PIXCIopen("", FORMAT, FORMATFILE);
@@ -1007,7 +1007,7 @@ namespace FinisGUI
                     {
                         string FORMAT = "";
                         string FORMATFILE = "";
-                        FORMATFILE = "C:/FINIS/FinisGUIProject/finisGUITest2/Resources/XCAPVideoSetup16Bit15Hz.fmt";
+                        FORMATFILE = "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup16Bit15Hz.fmt";
                         PXD.pxd_PIXCIclose();
                         Thread.Sleep(100);
                         PXD.pxd_PIXCIopen("", FORMAT, FORMATFILE);
@@ -1017,7 +1017,7 @@ namespace FinisGUI
                     {
                         string FORMAT = "";
                         string FORMATFILE = "";
-                        FORMATFILE = "C:/FINIS/FinisGUIProject/finisGUITest2/Resources/XCAPVideoSetup16Bit30Hz.fmt";
+                        FORMATFILE = "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup16Bit30Hz.fmt";
                         PXD.pxd_PIXCIclose();
                         Thread.Sleep(100);
                         PXD.pxd_PIXCIopen("", FORMAT, FORMATFILE);
