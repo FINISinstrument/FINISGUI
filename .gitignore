@@ -53,3 +53,4 @@ Ankh.NoLoad
 # Removing "Backup" folder
 Backup/
 *.sln
+.vs/
