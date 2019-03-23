@@ -43,14 +43,14 @@ namespace FinisGUI
                     {
                         pxd_PIXCIclose();
                         Thread.Sleep(100);
-                        pxd_PIXCIopen("", "", "C:/FINIS/FinisGUIProject/finisGUITest2/Resources/XCAPVideoSetup14Bit15Hz.fmt");
+                        pxd_PIXCIopen("", "", "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup14Bit15Hz.fmt");
                         Thread.Sleep(100);
                     }
                     else
                     {
                         pxd_PIXCIclose();
                         Thread.Sleep(100);
-                        pxd_PIXCIopen("", "", "C:/FINIS/FinisGUIProject/finisGUITest2/Resources/XCAPVideoSetup14Bit30Hz.fmt");
+                        pxd_PIXCIopen("", "", "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup14Bit30Hz.fmt");
                         Thread.Sleep(100);
                     }
                     IsSixteenBit = false;
@@ -62,14 +62,14 @@ namespace FinisGUI
                     {
                         pxd_PIXCIclose();
                         Thread.Sleep(100);
-                        pxd_PIXCIopen("", "", "C:/FINIS/FinisGUIProject/finisGUITest2/Resources/XCAPVideoSetup16Bit15Hz.fmt");
+                        pxd_PIXCIopen("", "", "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup16Bit15Hz.fmt");
                         Thread.Sleep(100);
                     }
                     else
                     {
                         pxd_PIXCIclose();
                         Thread.Sleep(100);
-                        pxd_PIXCIopen("", "", "C:/FINIS/FinisGUIProject/finisGUITest2/Resources/XCAPVideoSetup16Bit30Hz.fmt");
+                        pxd_PIXCIopen("", "", "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup16Bit30Hz.fmt");
                         Thread.Sleep(100);
                     }
                     IsSixteenBit = true;
@@ -103,7 +103,7 @@ namespace FinisGUI
                 }
 
 
-                pxd_PIXCIopen("", "", "C:/FINIS/FinisGUIProject/finisGUITest2/Resources/XCAPVideoSetup16Bit30Hz.fmt");
+                pxd_PIXCIopen("", "", "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup16Bit30Hz.fmt");
                 IsOpen = true;
             }
             catch
@@ -127,22 +127,22 @@ namespace FinisGUI
             {
                 if (IsSixteenBit)
                 {
-                    pxd_PIXCIopen("", "", "C:/FINIS/FinisGUIProject/finisGUITest2/Resources/XCAPVideoSetup16Bit30Hz.fmt");
+                    pxd_PIXCIopen("", "", "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup16Bit30Hz.fmt");
                 }
                 else
                 {
-                    pxd_PIXCIopen("", "", "C:/FINIS/FinisGUIProject/finisGUITest2/Resources/XCAPVideoSetup14Bit30Hz.fmt");
+                    pxd_PIXCIopen("", "", "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup14Bit30Hz.fmt");
                 }
             }
             else
             {
                 if (IsSixteenBit)
                 {
-                    pxd_PIXCIopen("", "", "C:/FINIS/FinisGUIProject/finisGUITest2/Resources/XCAPVideoSetup16Bit15Hz.fmt");
+                    pxd_PIXCIopen("", "", "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup16Bit15Hz.fmt");
                 }
                 else
                 {
-                    pxd_PIXCIopen("", "", "C:/FINIS/FinisGUIProject/finisGUITest2/Resources/XCAPVideoSetup14Bit15Hz.fmt");
+                    pxd_PIXCIopen("", "", "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup14Bit15Hz.fmt");
                 }
             }
             Thread.Sleep(1000);
