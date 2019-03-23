@@ -25,6 +25,7 @@ namespace FinisGUI
         public int frameCountRemainder { get; set; }
         public int imagesCaptured { get; set; }
         public int loopCount;
+        public int videoIndex; // Keep track of what major number to append to a video image
         #endregion
 
         public string ToggleBits(bool IsThirtyFPS)
@@ -91,6 +92,17 @@ namespace FinisGUI
         {
             try
             {
+                // Determine indices for writing images
+                String videoBase = "C:/FINIS/Images/Video/" + dateTime + "/" + liveName;
+                videoIndex = 1;
+
+                // Video number
+                while (File.Exists(videoBase + videoIndex + "-1.tif"))
+                {
+                    videoIndex++;
+                }
+
+
                 pxd_PIXCIopen("", "", "C:/FINIS/FinisGUIProject/finisGUITest2/Resources/XCAPVideoSetup16Bit30Hz.fmt");
                 IsOpen = true;
             }
@@ -135,7 +147,7 @@ namespace FinisGUI
             }
             Thread.Sleep(1000);
         }
-        
+
         public void StartStreaming()
         {
             pxd_goLive(1, 1);
@@ -241,66 +253,21 @@ namespace FinisGUI
             }
         }
 
-        public void ThreadedSaveSet()
+        // Function for threaded saving, where the start and end indices are specified
+        public void ThreadedSaveSetRange(int start, int end)
         {
             try
             {
-                int i = 1;
+                // Create base filename that will be saved to
+                String baseFilename = "C:/FINIS/Images/Video/"+dateTime+"/"+liveName + videoIndex;
 
-                while (true)
+                // Write all images in buffer to file
+                for (int j = start; j <= end; j++)
                 {
-                    if (File.Exists($"C:/FINIS/Images/Video/{dateTime}/{liveName}{i}-1.tif"))
-                    {
-                        i++;
-                    }
-                    else
-                    {
-                        i--;
-                        if (i < 1)
-                        {
-                            i = 1;
-                        }
-                        break;
-                    }
-                }
-                for (int j = 1; j <= 200; j++)
-                {
-                    pxd_saveTiff(1, $"C:/FINIS/Images/Video/{dateTime}/{liveName}{i}-{j + (loopCount * 400)}.tif", j, 0, 0, -1, -1, 0, 0);
-                }
-            }
-            catch (Exception ex)
-            {
-                // ...
-            }
-        }
-
-        public void ThreadedSaveSet2()
-        {
-            try
-            {
-                int i = 1;
-
-                while (true)
-                {
-                    if (File.Exists($"C:/FINIS/Images/Video/{dateTime}/{liveName}{i}-1.tif"))
-                    {
-                        i++;
-                    }
-                    else
-                    {
-                        i--;
-                        if (i < 1)
-                        {
-                            i = 1;
-                        }
-                        break;
-                    }
-                }
-                for (int j = 201; j <= 400; j++)
-                {
-                    pxd_saveTiff(1, $"C:/FINIS/Images/Video/{dateTime}/{liveName}{i}-{j + (loopCount * 400)}.tif", j, 0, 0, -1, -1, 0, 0);
+                    pxd_saveTiff(1, baseFilename + "-" + ( j + (loopCount * 400)) + ".tif", j, 0, 0, -1, -1, 0, 0);
                 }
 
+                // Increment loopCount for frame index
                 loopCount++;
             }
             catch (Exception ex)
