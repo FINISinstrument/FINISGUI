@@ -43,14 +43,14 @@ namespace FinisGUI
                     {
                         pxd_PIXCIclose();
                         Thread.Sleep(100);
-                        pxd_PIXCIopen("", "", "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup14Bit15Hz.fmt");
+                        pxd_PIXCIopen("", "", Constants.projectPath+"Resources/XCAPVideoSetup14Bit15Hz.fmt");
                         Thread.Sleep(100);
                     }
                     else
                     {
                         pxd_PIXCIclose();
                         Thread.Sleep(100);
-                        pxd_PIXCIopen("", "", "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup14Bit30Hz.fmt");
+                        pxd_PIXCIopen("", "", Constants.projectPath+"Resources/XCAPVideoSetup14Bit30Hz.fmt");
                         Thread.Sleep(100);
                     }
                     IsSixteenBit = false;
@@ -62,14 +62,14 @@ namespace FinisGUI
                     {
                         pxd_PIXCIclose();
                         Thread.Sleep(100);
-                        pxd_PIXCIopen("", "", "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup16Bit15Hz.fmt");
+                        pxd_PIXCIopen("", "", Constants.projectPath+"Resources/XCAPVideoSetup16Bit15Hz.fmt");
                         Thread.Sleep(100);
                     }
                     else
                     {
                         pxd_PIXCIclose();
                         Thread.Sleep(100);
-                        pxd_PIXCIopen("", "", "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup16Bit30Hz.fmt");
+                        pxd_PIXCIopen("", "", Constants.projectPath+"Resources/XCAPVideoSetup16Bit30Hz.fmt");
                         Thread.Sleep(100);
                     }
                     IsSixteenBit = true;
@@ -93,7 +93,7 @@ namespace FinisGUI
             try
             {
                 // Determine indices for writing images
-                String videoBase = "C:/FINIS/Images/Video/" + dateTime + "/" + liveName;
+                String videoBase = Constants.videoPath + dateTime + "/" + liveName;
                 videoIndex = 1;
 
                 // Video number
@@ -103,7 +103,7 @@ namespace FinisGUI
                 }
 
 
-                pxd_PIXCIopen("", "", "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup16Bit30Hz.fmt");
+                pxd_PIXCIopen("", "", Constants.projectPath+"Resources/XCAPVideoSetup16Bit30Hz.fmt");
                 IsOpen = true;
             }
             catch
@@ -127,22 +127,22 @@ namespace FinisGUI
             {
                 if (IsSixteenBit)
                 {
-                    pxd_PIXCIopen("", "", "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup16Bit30Hz.fmt");
+                    pxd_PIXCIopen("", "", Constants.projectPath+"Resources/XCAPVideoSetup16Bit30Hz.fmt");
                 }
                 else
                 {
-                    pxd_PIXCIopen("", "", "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup14Bit30Hz.fmt");
+                    pxd_PIXCIopen("", "", Constants.projectPath + "Resources/XCAPVideoSetup14Bit30Hz.fmt");
                 }
             }
             else
             {
                 if (IsSixteenBit)
                 {
-                    pxd_PIXCIopen("", "", "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup16Bit15Hz.fmt");
+                    pxd_PIXCIopen("", "", Constants.projectPath + "Resources/XCAPVideoSetup16Bit15Hz.fmt");
                 }
                 else
                 {
-                    pxd_PIXCIopen("", "", "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup14Bit15Hz.fmt");
+                    pxd_PIXCIopen("", "", Constants.projectPath + "Resources/XCAPVideoSetup14Bit15Hz.fmt");
                 }
             }
             Thread.Sleep(1000);
@@ -172,13 +172,13 @@ namespace FinisGUI
             int i = 1;
             while (true)
             {
-                if (File.Exists($"c:/FINIS/Images/Still/{stillName}{i}.tif"))
+                if (File.Exists($"{Constants.stillPath}{stillName}{i}.tif"))
                 {
                     i++;
                 }
                 else
                 {
-                    pxd_saveTiff(1, $"c:/FINIS/Images/Still/{stillName}{i}.tif", 1, 0, 0, -1, -1, 0, 0);
+                    pxd_saveTiff(1, $"{Constants.stillPath}{stillName}{i}.tif", 1, 0, 0, -1, -1, 0, 0);
                     break;
                 }
             }
@@ -209,7 +209,7 @@ namespace FinisGUI
 
             while (true)
             {
-                if (File.Exists($"C:/FINIS/Images/Video/{dateTime}/{liveName}{i}-1.tif"))
+                if (File.Exists($"{Constants.videoPath}{dateTime}/{liveName}{i}-1.tif"))
                 {
                     i++;
                 }
@@ -217,7 +217,7 @@ namespace FinisGUI
                 {
                     for (int j = 1; j <= frameCount; j++)
                     {
-                        pxd_saveTiff(1, $"C:/FINIS/Images/Video/{dateTime}/{liveName}{i}-{j}.tif", j, 0, 0, -1, -1, 0, 0);
+                        pxd_saveTiff(1, $"{Constants.videoPath}{dateTime}/{liveName}{i}-{j}.tif", j, 0, 0, -1, -1, 0, 0);
                     }
                     break;
                 }
@@ -230,7 +230,7 @@ namespace FinisGUI
 
             while (true)
             {
-                if (File.Exists($"C:/FINIS/Images/Video/{dateTime}/{liveName}{i}-1.tif"))
+                if (File.Exists($"{Constants.videoPath}{dateTime}/{liveName}{i}-1.tif"))
                 {
                     i++;
                 }
@@ -239,7 +239,7 @@ namespace FinisGUI
                     i--;
                     for (int j = 1; j <= frameCount; j++)
                     {
-                        pxd_saveTiff(1, $"C:/FINIS/Images/Video/{dateTime}/{liveName}{i}-{j + countOffset}.tif", j, 0, 0, -1, -1, 0, 0);
+                        pxd_saveTiff(1, $"{Constants.videoPath}{dateTime}/{liveName}{i}-{j + countOffset}.tif", j, 0, 0, -1, -1, 0, 0);
                     }
                     break;
                 }
@@ -252,7 +252,7 @@ namespace FinisGUI
             try
             {
                 // Create base filename that will be saved to
-                String baseFilename = "C:/FINIS/Images/Video/"+dateTime+"/"+liveName + videoIndex;
+                String baseFilename = Constants.videoPath + dateTime + "/" + liveName + videoIndex;
 
                 // Write all images in buffer to file
                 for (int j = start; j <= end; j++)

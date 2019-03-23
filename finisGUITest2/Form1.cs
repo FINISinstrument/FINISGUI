@@ -287,7 +287,7 @@ namespace FinisGUI
                 shutter.Open();
 
                 pxd.dateTime = DateTime.Now.ToString("MM-dd-yyyy-HHmm");
-                Directory.CreateDirectory($"C:/FINIS/Images/Video/{pxd.dateTime}/");
+                Directory.CreateDirectory($"{Constants.videoPath}/{pxd.dateTime}/");
 
                 if (pxd.frameCount <= 400)
                 {
@@ -608,7 +608,7 @@ namespace FinisGUI
         {
             try
             {
-                DirectoryInfo di = new DirectoryInfo("C:/FINIS/Images/Video");
+                DirectoryInfo di = new DirectoryInfo(Constants.videoPath);
                 foreach (FileInfo file in di.GetFiles())
                 {
                     file.Delete();
@@ -620,7 +620,7 @@ namespace FinisGUI
             }
             catch (Exception ex)
             {
-                promptBox.Text += $"{ex.Message}\n Check Video Folder\nC:/FINIS/Images/Video/\n";
+                promptBox.Text += $"{ex.Message}\n Check Video Folder\n{Constants.videoPath}\n";
             }
         }
 
@@ -628,7 +628,7 @@ namespace FinisGUI
         {
             try
             {
-                DirectoryInfo di = new DirectoryInfo("C:/FINIS/Images/Still/");
+                DirectoryInfo di = new DirectoryInfo(Constants.stillPath);
                 foreach (FileInfo file in di.GetFiles())
                 {
                     file.Delete();
@@ -640,7 +640,7 @@ namespace FinisGUI
             }
             catch (Exception ex)
             {
-                promptBox.Text += $"{ex.Message}\n Check Still Image Folder\nC:/FINIS/Images/Still/\n";
+                promptBox.Text += $"{ex.Message}\n Check Still Image Folder\n{Constants.stillPath}\n";
             }
         }
 
@@ -683,7 +683,7 @@ namespace FinisGUI
 
                     string FORMAT = "";
                     string FORMATFILE = "";
-                    FORMATFILE = "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup16Bit30Hz.fmt";
+                    FORMATFILE = $"{Constants.projectPath}Resources/XCAPVideoSetup16Bit30Hz.fmt";
                     PXD.pxd_PIXCIclose();
                     Thread.Sleep(100);
                     int i = PXD.pxd_PIXCIopen("", FORMAT, FORMATFILE);
@@ -729,11 +729,11 @@ namespace FinisGUI
             try
             {
                 infoFiles = 0;
-                while (File.Exists($"C:/FINIS/Images/Info/VideoInfo/info{infoFiles}.txt"))
+                while (File.Exists($"{Constants.infoPath}VideoInfo/info{infoFiles}.txt"))
                 {
                     infoFiles++;
                 }
-                File.WriteAllLines($"C:/FINIS/Images/Info/VideoInfo/info{infoFiles}.txt", info);
+                File.WriteAllLines($"{Constants.infoPath}VideoInfo/info{infoFiles}.txt", info);
                 promptBox.Text += $"\"info{infoFiles}.txt\" created\n";
             }
             catch
@@ -750,7 +750,7 @@ namespace FinisGUI
                 {
                     for (int i = 1; i <= pxd.frameCount; i++)
                     {
-                        File.AppendAllText($"C:/FINIS/Images/Video/{pxd.liveName}{i}.tif", info[i + 1]);
+                        File.AppendAllText($"{Constants.videoPath}{pxd.liveName}{i}.tif", info[i + 1]);
                     }
                 }
                 else
@@ -762,7 +762,7 @@ namespace FinisGUI
                         {
                             while (j <= 400)
                             {
-                                File.AppendAllText($"C:/FINIS/Images/Video/{pxd.liveName}{i * 400 + j}.tif", info[i + 2]);
+                                File.AppendAllText($"{Constants.videoPath}{pxd.liveName}{i * 400 + j}.tif", info[i + 2]);
                                 j++;
                             }
                             j = 1;
@@ -774,7 +774,7 @@ namespace FinisGUI
                             {
                                 for (int k = 1; k <= pxd.frameCountRemainder; k++)
                                 {
-                                    File.AppendAllText($"C:/FINIS/Images/Video/{pxd.liveName}{(i + 1) * 400 + k}.tif", info[i + 3]);
+                                    File.AppendAllText($"{Constants.videoPath}{pxd.liveName}{(i + 1) * 400 + k}.tif", info[i + 3]);
                                 }
                             }
                             break;
@@ -795,7 +795,7 @@ namespace FinisGUI
             promptBox.Text += "Files Missed: \"";
             for (int i = 1; i <= pxd.frameCount; i++)
             {
-                if (!File.Exists($"C:/FINIS/Images/Video/{pxd.liveName}{i}.tif"))
+                if (!File.Exists($"{Constants.videoPath}{pxd.liveName}{i}.tif"))
                 {
                     promptBox.Text += $"{i}, ";
                     j++;
@@ -822,7 +822,7 @@ namespace FinisGUI
                 pxd.frameCountRemainder = 0;
 
                 info[1] = "TempSetPoint\tCamTemp\tExposure\tGain\tFrameRate";
-                while (File.Exists($"C:/FINIS/Images/Info/VideoInfo/info{infoFiles}.txt"))
+                while (File.Exists($"{Constants.infoPath}VideoInfo/info{infoFiles}.txt"))
                 {
                     infoFiles++;
                 }
@@ -1061,8 +1061,8 @@ namespace FinisGUI
         {
             string datetime = $"{DateTime.Now.ToString("MM-dd-yyyy-HHmm")}";
             promptBox.Text += datetime;
-            Directory.CreateDirectory($"C:/FINIS/Images/Video/{datetime}/");
-            File.Create($"C:/FINIS/Images/Video/{datetime}/TestFile.txt");
+            Directory.CreateDirectory($"{Constants.videoPath}{datetime}/");
+            File.Create($"{Constants.videoPath}{datetime}/TestFile.txt");
         }
     }
 }
