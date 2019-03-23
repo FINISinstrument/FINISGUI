@@ -25,7 +25,7 @@ namespace FinisGUI
                 if (!ShutterOpen && !ShutterLocked)
                 {
                     ShutterOpen = true;
-                    var process = Process.Start("C:/FINIS/FinisGUIProject/finisGUITest2/Resources/OpenShutter.exe");
+                    var process = Process.Start("c:/FINIS/FINISGUI/finisGUITest2/Resources/OpenShutter.exe");
                     process.WaitForExit();
                     Thread.Sleep(100);
                     return "Open";
@@ -60,7 +60,7 @@ namespace FinisGUI
                 if (ShutterOpen && !ShutterLocked)
                 {
                     ShutterOpen = false;
-                    var process = Process.Start("C:/FINIS/FinisGUIProject/finisGUITest2/Resources/CloseShutter.exe");
+                    var process = Process.Start("c:/FINIS/FINISGUI/finisGUITest2/Resources/CloseShutter.exe");
                     process.WaitForExit();
                     Thread.Sleep(100);
                     return "Closed";
@@ -91,7 +91,7 @@ namespace FinisGUI
         {
             try
             {
-                Process.Start("C:/FINIS/FinisGUIProject/finisGUITest2/Resources/CloseShutter.exe");
+                Process.Start("c:/FINIS/FINISGUI/finisGUITest2/Resources/CloseShutter.exe");
             }
             catch
             {

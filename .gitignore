@@ -54,3 +54,6 @@ Ankh.NoLoad
 Backup/
 *.sln
 .vs/
+
+# Ignore Exceptions
+!finisGUITest2/Resources/*.exe
