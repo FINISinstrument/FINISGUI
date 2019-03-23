@@ -186,15 +186,8 @@ namespace FinisGUI
 
         public void Record(int startBuf, int videoPeriod)
         {
-            try
-            {
-                pxd_goLiveSeq(1, startBuf, startBuf + frameCount, 1, frameCount, videoPeriod);
-                while (pxd_goneLive(1, 0));
-            }
-            catch (Exception ex)
-            {
-                // ... promptBox.Text += $"Could not record images to memory:\n{ex.Message}\n";
-            }
+            // Call Record, but define frames based on member variable
+            Record(startBuf, videoPeriod, frameCount);
         }
 
         public void Record(int startBuf, int videoPeriod, int frameCountAlt)
