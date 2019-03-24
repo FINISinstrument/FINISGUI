@@ -24,6 +24,8 @@ namespace FinisGUI
         public int frameCount { get; set; }
         public int frameCountRemainder { get; set; }
         public int imagesCaptured { get; set; }
+
+        public int bufferSize; // Number of frames in half the buffer
         public int loopCount;
         public int videoIndex; // Keep track of what major number to append to a video image
         #endregion
@@ -101,6 +103,9 @@ namespace FinisGUI
                 {
                     videoIndex++;
                 }
+
+                // Number of frames stored in half the image buffer
+                bufferSize = 400;
 
 
                 pxd_PIXCIopen("", "", Constants.projectPath+"Resources/XCAPVideoSetup16Bit30Hz.fmt");
@@ -246,8 +251,9 @@ namespace FinisGUI
             }
         }
 
-        // Function for threaded saving, where the start and end indices are specified
-        public void ThreadedSaveSetRange(int start, int end)
+        // Function for threaded saving, where the start index is specified
+        // Write half of the buffer (size in Initialize)
+        public void ThreadedSaveSetRange(int start)
         {
             try
             {
@@ -255,9 +261,9 @@ namespace FinisGUI
                 String baseFilename = Constants.videoPath + dateTime + "/" + liveName + videoIndex;
 
                 // Write all images in buffer to file
-                for (int j = start; j <= end; j++)
+                for (int j = 0; j <= bufferSize/2; j++)
                 {
-                    pxd_saveTiff(1, baseFilename + "-" + ( j + (loopCount * 400)) + ".tif", j, 0, 0, -1, -1, 0, 0);
+                    pxd_saveTiff(1, baseFilename + "-" + ( start + j + (loopCount * (bufferSize/2))) + ".tif", j, 0, 0, -1, -1, 0, 0);
                 }
 
                 // Increment loopCount for frame index

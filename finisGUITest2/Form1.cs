@@ -325,12 +325,12 @@ namespace FinisGUI
                     {
                         pxd.Record(1, 1);
 
-                        Thread SAVE = new Thread(() => pxd.ThreadedSaveSetRange(1,200));
+                        Thread SAVE = new Thread(() => pxd.ThreadedSaveSetRange(1));
                         SAVE.Start();
 
                         pxd.Record(201, 1);
 
-                        Thread SAVE2 = new Thread(() => pxd.ThreadedSaveSetRange(201, 400));
+                        Thread SAVE2 = new Thread(() => pxd.ThreadedSaveSetRange(201));
                         SAVE2.Start();
                         pxd.imagesCaptured += 400;
                     }
