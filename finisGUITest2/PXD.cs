@@ -260,7 +260,6 @@ namespace FinisGUI
 
         /// <summary>
         /// Saves a set of images from the frame buffer.
-        /// --DEPRECATED, do not use--
         /// </summary>
         public void SaveSet()
         {
@@ -285,7 +284,6 @@ namespace FinisGUI
 
         /// <summary>
         /// Saves a set of images from the frame buffer beginning with a countOffset difference in the name.
-        /// --DEPRECATED, do not use--
         /// </summary>
         /// <param name="countOffset"></param>
         public void SaveSet(int countOffset)
