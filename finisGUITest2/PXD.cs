@@ -310,41 +310,24 @@ namespace FinisGUI
 
         /// <summary>
         /// Function for threaded saving with specified starting indes.
-        /// first_half is whether to save the first half of the function. If false, save second half
-        /// Semaphores are used to coordinate timing with camera writing to buffer
+        /// startIndex corresponds to beginning frame buffer and how frames are saved.
         /// </summary>
-        /// <param name="first_half"></param>
-        /// <param name="grabBuffer"></param>
-        /// <param name="releaseBuffer"></param>
-        public void ThreadedSaveSetRange(bool first_half, Semaphore grabBuffer, Semaphore releaseBuffer)
+        /// <param name="startIndex"></param>
+        public void ThreadedSaveSetRange(int startIndex)
         {
             try
             {
                 // Create base filename that will be saved to
-                String baseFilename = Constants.videoPath + dateTime + "/" + liveName + videoIndex;
+                string baseFilename = string.Concat(Constants.videoPath, dateTime, "/", liveName, videoIndex);
 
-                int frameNumber = 1;
-                if (first_half)
-                    frameNumber = bufferSize / 2 + 1;
-
-                // Loop until buffer is written to disk
-                while (frameNumber < frameCount)
+                // Write all images in buffer to file
+                for (int j = 0; j <= bufferSize/2; j++)
                 {
-                    // Wait for semaphore to be ready
-                    grabBuffer.WaitOne();
-
-                    // Write all images in buffer to file
-                    for (int j = 0; j <= bufferSize / 2 && frameNumber < frameCount; j++)
-                    {
-                        pxd_saveTiff(1, baseFilename + "-" + (frameNumber++) + ".tif", j, 0, 0, -1, -1, 0, 0);
-                    }
-
-                    // Increment frameCount by half of bufferSize
-                    frameNumber += bufferSize / 2;
-
-                    // Release semaphore
-                    releaseBuffer.Release();
+                    pxd_saveTiff(1, baseFilename + "-" + ( startIndex + j + (loopCount * (bufferSize/2))) + ".tif", j, 0, 0, -1, -1, 0, 0);
                 }
+
+                // Increment loopCount for frame index
+                loopCount++;
             }
             catch (Exception ex)
             {

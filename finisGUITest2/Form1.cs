@@ -134,137 +134,7 @@ namespace FinisGUI
             {
                 promptBox.Text += $"{ex.Message}\n";
             }
-        }   //
-
-        /*private void Record_Button_Click2(object sender, System.EventArgs e)
-        {
-            try
-            {
-                imagesCaptured = 0;
-                loopCount = 0;
-                if (pxd.IsStreaming)
-                {
-                    pxd.StopStreaming();
-                }
-                else if (!vmb.acquiring)
-                {
-                    vmb.StartAcquisition();
-                }
-                if (!pxd.IsSixteenBit)
-                {
-                    Bits_Label.Text = pxd.ToggleBits(IsThirtyFPS);
-                }
-                shutter.Open();
-
-                if (frameCount <= 400)
-                {
-                    if (IsThirtyFPS)
-                    {
-                        vmb.UpdateTemperature();
-
-                        Timer.Reset();
-                        Timer.Start();
-                        pxd.Record(1, frameCount, 1);
-                        Timer.Stop();
-                    }
-                    else
-                    {
-                        Timer.Reset();
-                        Timer.Start();
-                        pxd.Record(1, frameCount, 2);
-                        Timer.Stop();
-                    }
-
-                    for (int i = 0; i < frameCount; i++)
-                    {
-                        info[i + 2] = $"{camera.Features["SensorTemperatureSetpointValue"].IntValue}\t" +
-                            $"{string.Format("{0:F3}", temperature)}\t" +
-                            $"{(int)(camera.Features["ExposureTime"].FloatValue)}\t" +
-                            $"{camera.Features["SensorGain"].EnumValue}\t" +
-                            $"{(int)(camera.Features["AcquisitionFrameRate"].FloatValue)}";
-                    }
-
-                    promptBox.Text += $"Video capture time: {Timer.ElapsedMilliseconds / 1000.0}\n";
-                    promptBox.Text += $"Images Captured: {frameCount}\n";
-                    fpsActual = (frameCount / ((float)Timer.ElapsedMilliseconds / 1000));
-                    promptBox.Text += $"Actual Frame Rate: {string.Format("{0:F2}", fpsActual)}\n";
-                    info[0] = $"Total Time: {string.Format("{0:F2}", Timer.ElapsedMilliseconds / 1000.0)}s, Frames: {frameCount}, Frame Rate: {string.Format("{0:F2}", fpsActual)}fps";
-
-                    Timer.Reset();
-                    Timer.Start();
-                    try
-                    {
-                        pxd.SaveSet(frameCount, liveName);
-                    }
-                    catch (Exception ex)
-                    {
-                        promptBox.Text += $"Could not save images:\n{ex.Message}\n";
-                    }
-                    Timer.Stop();
-                    promptBox.Text += $"Save Time: {(float)Timer.ElapsedMilliseconds / 1000}\n";
-                }
-                else // frameCount > 400
-                {
-                    frameCountRemainder = frameCount % 400;
-                    //feature = camera.Features["DeviceTemperature"];
-                    //info[1] = "TempSetPoint\tCamTemp\tExposure\tGain\tFrameRate";
-                    PXD.pxd_goUnLive(1);
-                    Thread.Sleep(200);
-
-                    Timer.Reset();
-                    Timer.Start();
-                    for (int i = 0; i < frameCount / 400; i++)
-                    {
-                        pxd.Record(1, frameCount, 1);
-
-                        Thread SAVE = new Thread(ThreadedSave);
-                        info[i + 2] = $"{camera.Features["SensorTemperatureSetpointValue"].IntValue}\t" +
-                            $"{string.Format("{0:F3}", temperature)}\t" +
-                            $"{(int)(camera.Features["ExposureTime"].FloatValue)}\t" +
-                            $"{camera.Features["SensorGain"].EnumValue}\t" +
-                            $"{(int)(camera.Features["AcquisitionFrameRate"].FloatValue)}\t{400 + (frameCount / 400) * i}";
-                        SAVE.Start();
-
-                        pxd.Record(201, frameCount, 1);
-
-                        Thread SAVE2 = new Thread(ThreadedSave2);
-                        SAVE2.Start();
-                    }
-                    if (frameCountRemainder > 0)
-                    {
-                        pxd.Record(1, frameCountRemainder, 1);
-
-                        info[imagesCaptured / 400 + 2] = $"{camera.Features["SensorTemperatureSetpointValue"].IntValue}\t" +
-                            $"{string.Format("{0:F3}", temperature)}\t" +
-                            $"{(int)(camera.Features["ExposureTime"].FloatValue)}\t" +
-                            $"{camera.Features["SensorGain"].EnumValue}\t" +
-                            $"{(int)(camera.Features["AcquisitionFrameRate"].FloatValue)}\t{imagesCaptured + frameCountTemp}";
-                    }
-                    Timer.Stop();
-                    if (frameCountRemainder > 0)
-                    {
-                        pxd.SaveSet(frameCountRemainder, liveName, imagesCaptured);
-                        imagesCaptured += frameCountRemainder;
-                    }
-
-                    promptBox.Text += $"Video capture time: {Timer.ElapsedMilliseconds / 1000.0}\n";
-                    promptBox.Text += $"Images Captured: {imagesCaptured}\n";
-                    fpsActual = ((imagesCaptured) / ((float)Timer.ElapsedMilliseconds / 1000));
-                    promptBox.Text += $"Actual Frame Rate: {fpsActual}\n";
-                    info[0] = $"Total Time: {string.Format("{0:F2}", Timer.ElapsedMilliseconds / 1000.0)}s, Frames: {frameCount}, Frame Rate: {string.Format("{0:F2}", fpsActual)}fps";
-                }
-
-                shutter.Close();
-            }
-            catch (VimbaException ve)
-            {
-                promptBox.Text += $"{ve.Message}\n";
-            }
-            catch (Exception ex)
-            {
-                promptBox.Text += $"{ex.Message}\n";
-            }
-        }*/
+        }
 
         private void Record_Button_Click(object sender, EventArgs e)
         {
@@ -320,40 +190,15 @@ namespace FinisGUI
                 else // if (frameCount > 400)
                 {
                     Timer.Reset();
-                    
-                    Semaphore first_writeToBuffer = new Semaphore(1, 1);
-                    Semaphore first_readFromBuffer = new Semaphore(0, 1);
-                    Semaphore second_writeToBuffer = new Semaphore(1, 1);
-                    Semaphore second_readFromBuffer = new Semaphore(0, 1);
                     Timer.Start();
-<<<<<<< HEAD
-=======
                     for (int i = 0; i < pxd.frameCount / 400; i++)
                     {
-                        pxd.Record(1, 1);
->>>>>>> parent of d131c34... Update Form1.cs
+                        pxd.Record(1, 200);
 
-                    // Initialize save threads
-                    Thread SAVE = new Thread(() => pxd.ThreadedSaveSetRange(true, first_readFromBuffer, first_writeToBuffer));
-                    Thread SAVE2 = new Thread(() => pxd.ThreadedSaveSetRange(false, second_readFromBuffer, second_writeToBuffer));
-                    SAVE.Start();
-                    SAVE2.Start();
+                        Thread SAVE = new Thread(() => pxd.ThreadedSaveSetRange(1));
+                        SAVE.Start();
 
-<<<<<<< HEAD
-                    for (int i = 0; i < pxd.frameCount / 400; i++)
-                    {
-                        first_writeToBuffer.WaitOne();
-                        // Write first part of buffer
-                        pxd.Record(1, 1);
-                        // Read first part of buffer
-                        first_readFromBuffer.Release();
-                        // Write second part of buffer
-                        second_writeToBuffer.WaitOne();
-                        pxd.Record(201, 1);
-                        // Read second part of buffer
-                        second_readFromBuffer.Release();
-=======
-                        pxd.Record(201, 1);
+                        pxd.Record(201, 200);
 
                         Thread SAVE2 = new Thread(() => pxd.ThreadedSaveSetRange(201));
                         SAVE2.Start();
@@ -361,16 +206,16 @@ namespace FinisGUI
                     }
                     if (pxd.frameCountRemainder != 0)
                     {
-                        pxd.Record(1, 1, pxd.frameCountRemainder);
->>>>>>> parent of d131c34... Update Form1.cs
+                        pxd.Record(1, pxd.frameCountRemainder);
                     }
                     Timer.Stop();
 
-                    /*if (pxd.frameCountRemainder != 0)
+
+                    if (pxd.frameCountRemainder != 0)
                     {
                         pxd.SaveSet(pxd.imagesCaptured);
                         pxd.imagesCaptured += pxd.frameCountRemainder;
-                    }*/
+                    }
                 }
                 promptBox.Text += $"Capture Time: {(float)Timer.ElapsedMilliseconds / 1000}\n";
                 promptBox.Text += $"Images Captured: {pxd.imagesCaptured}\n";
