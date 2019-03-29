@@ -30,6 +30,11 @@ namespace FinisGUI
         public int videoIndex; // Keep track of what major number to append to a video image
         #endregion
 
+        /// <summary>
+        /// Reboots the PIXCI software to change from 14-bit pixel output to 16-bit or vice versa from the frame grabber.
+        /// </summary>
+        /// <param name="IsThirtyFPS"></param>
+        /// <returns></returns>
         public string ToggleBits(bool IsThirtyFPS)
         {
             string bootFile = null;
@@ -90,6 +95,10 @@ namespace FinisGUI
             }
         }
 
+        /// <summary>
+        /// Initializes the PIXCI software with the default settings file.
+        /// Initializes for 16-bit pixel output at 30Hz.
+        /// </summary>
         public void Initialize()
         {
             try
@@ -119,12 +128,19 @@ namespace FinisGUI
             Thread.Sleep(100);
         }
 
+        /// <summary>
+        /// Closes the PIXCI software.
+        /// </summary>
         public void Close()
         {
             pxd_PIXCIclose();
             Thread.Sleep(100);
         }
 
+        /// <summary>
+        /// Reboots the PIXCI software with settings prior to reboot.
+        /// </summary>
+        /// <param name="IsThirtyFPS"></param>
         public void Restart(bool IsThirtyFPS)
         {
             pxd_PIXCIclose();
@@ -153,6 +169,9 @@ namespace FinisGUI
             Thread.Sleep(1000);
         }
 
+        /// <summary>
+        /// Begins a live feed from camera.
+        /// </summary>
         public void StartStreaming()
         {
             pxd_goLive(1, 1);
@@ -160,6 +179,9 @@ namespace FinisGUI
             Thread.Sleep(200);
         }
 
+        /// <summary>
+        /// Stops live feed from camera.
+        /// </summary>
         public void StopStreaming()
         {
             pxd_goUnLive(1);
@@ -167,47 +189,78 @@ namespace FinisGUI
             Thread.Sleep(200);
         }
 
+        /// <summary>
+        /// Captures a single image.
+        /// </summary>
         public void Snap()
         {
             pxd_goSnap(1, 1);
         }
 
-        public void SaveStill(string stillName)
+        /// <summary>
+        /// Saves the image currently stored in buffer 1.
+        /// </summary>
+        /// <param name="name"></param>
+        public void SaveStill(string name)
         {
             int i = 1;
             while (true)
             {
-                if (File.Exists($"{Constants.stillPath}{stillName}{i}.tif"))
+                if (File.Exists($"{Constants.stillPath}{name}{i}.tif"))
                 {
                     i++;
                 }
                 else
                 {
-                    pxd_saveTiff(1, $"{Constants.stillPath}{stillName}{i}.tif", 1, 0, 0, -1, -1, 0, 0);
+                    pxd_saveTiff(1, $"{Constants.stillPath}{name}{i}.tif", 1, 0, 0, -1, -1, 0, 0);
+                    break;
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Saves the image currently stored in the specified buffer
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="buffer"></param>
+        public void SaveStill(string name, int buffer)
+        {
+            int i = 1;
+            while (true)
+            {
+                if (File.Exists($"{Constants.stillPath}{name}{i}.tif"))
+                {
+                    i++;
+                }
+                else
+                {
+                    pxd_saveTiff(1, $"{Constants.stillPath}{name}{i}.tif", buffer, 0, 0, -1, -1, 0, 0);
                     break;
                 }
             }
         }
 
-        public void Record(int startBuf, int videoPeriod)
-        {
-            // Call Record, but define frames based on member variable
-            Record(startBuf, videoPeriod, frameCount);
-        }
-
-        public void Record(int startBuf, int videoPeriod, int frameCountAlt)
+        /// <summary>
+        /// Records a number of frames specified beginning where specified.
+        /// </summary>
+        /// <param name="startBuf"></param>
+        /// <param name="numFrames"></param>
+        public void Record(int startBuf, int numFrames)
         {
             try
             {
-                pxd_goLiveSeq(1, startBuf, startBuf + frameCountAlt, 1, frameCountAlt, videoPeriod);
+                pxd_goLiveSeq(1, startBuf, startBuf + numFrames, 1, numFrames, 1);
                 while (pxd_goneLive(1, 0)) ;
             }
             catch (Exception ex)
             {
-                // ... promptBox.Text += $"Could not record images to memory:\n{ex.Message}\n";
+                // Do nothing
             }
         }
 
+        /// <summary>
+        /// Saves a set of images from the frame buffer.
+        /// </summary>
         public void SaveSet()
         {
             int i = 1;
@@ -229,6 +282,10 @@ namespace FinisGUI
             }
         }
 
+        /// <summary>
+        /// Saves a set of images from the frame buffer beginning with a countOffset difference in the name.
+        /// </summary>
+        /// <param name="countOffset"></param>
         public void SaveSet(int countOffset)
         {
             int i = 1;
@@ -251,19 +308,22 @@ namespace FinisGUI
             }
         }
 
-        // Function for threaded saving, where the start index is specified
-        // Write half of the buffer (size in Initialize)
-        public void ThreadedSaveSetRange(int start)
+        /// <summary>
+        /// Function for threaded saving with specified starting indes.
+        /// startIndex corresponds to beginning frame buffer and how frames are saved.
+        /// </summary>
+        /// <param name="startIndex"></param>
+        public void ThreadedSaveSetRange(int startIndex)
         {
             try
             {
                 // Create base filename that will be saved to
-                String baseFilename = Constants.videoPath + dateTime + "/" + liveName + videoIndex;
+                string baseFilename = string.Concat(Constants.videoPath, dateTime, "/", liveName, videoIndex);
 
                 // Write all images in buffer to file
                 for (int j = 0; j <= bufferSize/2; j++)
                 {
-                    pxd_saveTiff(1, baseFilename + "-" + ( start + j + (loopCount * (bufferSize/2))) + ".tif", j, 0, 0, -1, -1, 0, 0);
+                    pxd_saveTiff(1, baseFilename + "-" + ( startIndex + j + (loopCount * (bufferSize/2))) + ".tif", j, 0, 0, -1, -1, 0, 0);
                 }
 
                 // Increment loopCount for frame index
@@ -276,6 +336,8 @@ namespace FinisGUI
         }
 
         #region Function Imports
+        //Imports of functions from the XCLIB library.
+
         [DllImport("C:/FINIS/XCLIB/lib/xclybwnt.dll")]
         public static extern int pxd_PIXCIopen(string c_driverparms, string c_formatname, string c_formatfile);
 
