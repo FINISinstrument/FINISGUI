@@ -245,11 +245,11 @@ namespace FinisGUI
         /// </summary>
         /// <param name="startBuf"></param>
         /// <param name="numFrames"></param>
-        public void Record(int startBuf, int numFrames)
+        public void Record(int startBuf, int numFrames, int videoPeriod)
         {
             try
             {
-                pxd_goLiveSeq(1, startBuf, startBuf + numFrames, 1, numFrames, 1);
+                pxd_goLiveSeq(1, startBuf, startBuf + numFrames, 1, numFrames, videoPeriod);
                 while (pxd_goneLive(1, 0)) ;
             }
             catch (Exception ex)

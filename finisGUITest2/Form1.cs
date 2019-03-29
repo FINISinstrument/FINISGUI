@@ -167,14 +167,14 @@ namespace FinisGUI
 
                         Timer.Reset();
                         Timer.Start();
-                        pxd.Record(1, 1);
+                        pxd.Record(1, pxd.frameCount, 1);
                         Timer.Stop();
                     }
                     else
                     {
                         Timer.Reset();
                         Timer.Start();
-                        pxd.Record(1, 2);
+                        pxd.Record(1, pxd.frameCount, 2);
                         Timer.Stop();
                     }
 
@@ -193,12 +193,12 @@ namespace FinisGUI
                     Timer.Start();
                     for (int i = 0; i < pxd.frameCount / 400; i++)
                     {
-                        pxd.Record(1, 200);
+                        pxd.Record(1, 200, 1);
 
                         Thread SAVE = new Thread(() => pxd.ThreadedSaveSetRange(1));
                         SAVE.Start();
 
-                        pxd.Record(201, 200);
+                        pxd.Record(201, 200, 1);
 
                         Thread SAVE2 = new Thread(() => pxd.ThreadedSaveSetRange(201));
                         SAVE2.Start();
@@ -206,7 +206,7 @@ namespace FinisGUI
                     }
                     if (pxd.frameCountRemainder != 0)
                     {
-                        pxd.Record(1, pxd.frameCountRemainder);
+                        pxd.Record(1, pxd.frameCountRemainder, 1);
                     }
                     Timer.Stop();
 
