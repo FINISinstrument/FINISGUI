@@ -320,53 +320,24 @@ namespace FinisGUI
                 else // if (frameCount > 400)
                 {
                     Timer.Reset();
-                    
-                    Semaphore first_writeToBuffer = new Semaphore(1, 1);
-                    Semaphore first_readFromBuffer = new Semaphore(0, 1);
-                    Semaphore second_writeToBuffer = new Semaphore(1, 1);
-                    Semaphore second_readFromBuffer = new Semaphore(0, 1);
                     Timer.Start();
-                    /*for (int i = 0; i < pxd.frameCount / 400; i++)
+                    for (int i = 0; i < pxd.frameCount / 400; i++)
                     {
                         pxd.Record(1, 1);
 
-                        //Thread SAVE = new Thread(() => pxd.ThreadedSaveSetRange(1, semaphore_1));
-                        Thread SAVE = new Thread(() => pxd.ThreadedSaveSetRange(true, semaphore_1));
+                        Thread SAVE = new Thread(() => pxd.ThreadedSaveSetRange(1));
                         SAVE.Start();
 
                         pxd.Record(201, 1);
 
-                        //Thread SAVE2 = new Thread(() => pxd.ThreadedSaveSetRange(201, semaphore_2));
-                        Thread SAVE2 = new Thread(() => pxd.ThreadedSaveSetRange(false, semaphore_2));
+                        Thread SAVE2 = new Thread(() => pxd.ThreadedSaveSetRange(201));
                         SAVE2.Start();
                         pxd.imagesCaptured += 400;
                     }
                     if (pxd.frameCountRemainder != 0)
                     {
                         pxd.Record(1, 1, pxd.frameCountRemainder);
-                    }*/
-
-                    // Initialize save threads
-                    Thread SAVE  = new Thread(() => pxd.ThreadedSaveSetRange(true,  first_readFromBuffer, first_writeToBuffer));
-                    Thread SAVE2 = new Thread(() => pxd.ThreadedSaveSetRange(false, second_readFromBuffer, second_writeToBuffer));
-                    SAVE.Start();
-                    SAVE2.Start();
-
-                    for (int i = 0; i < pxd.frameCount / 400; i++)
-                    {
-                        first_writeToBuffer.WaitOne();
-                        // Write first part of buffer
-                        pxd.Record(1, 1);
-                        // Read first part of buffer
-                        first_readFromBuffer.Release();
-                        // Write second part of buffer
-                        second_writeToBuffer.WaitOne();
-                        pxd.Record(201, 1);
-                        // Read second part of buffer
-                        second_readFromBuffer.Release();
                     }
-
-
                     Timer.Stop();
 
 
