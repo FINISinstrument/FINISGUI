@@ -310,24 +310,41 @@ namespace FinisGUI
 
         /// <summary>
         /// Function for threaded saving with specified starting indes.
-        /// startIndex corresponds to beginning frame buffer and how frames are saved.
+        /// first_half is whether to save the first half of the function. If false, save second half
+        /// Semaphores are used to coordinate timing with camera writing to buffer
         /// </summary>
-        /// <param name="startIndex"></param>
-        public void ThreadedSaveSetRange(int startIndex)
+        /// <param name="first_half"></param>
+        /// <param name="grabBuffer"></param>
+        /// <param name="releaseBuffer"></param>
+        public void ThreadedSaveSetRange(bool first_half, Semaphore grabBuffer, Semaphore releaseBuffer)
         {
             try
             {
                 // Create base filename that will be saved to
-                string baseFilename = string.Concat(Constants.videoPath, dateTime, "/", liveName, videoIndex);
+                String baseFilename = Constants.videoPath + dateTime + "/" + liveName + videoIndex;
 
-                // Write all images in buffer to file
-                for (int j = 0; j <= bufferSize/2; j++)
+                int frameNumber = 1;
+                if (first_half)
+                    frameNumber = bufferSize / 2 + 1;
+
+                // Loop until buffer is written to disk
+                while (frameNumber < frameCount)
                 {
-                    pxd_saveTiff(1, baseFilename + "-" + ( startIndex + j + (loopCount * (bufferSize/2))) + ".tif", j, 0, 0, -1, -1, 0, 0);
-                }
+                    // Wait for semaphore to be ready
+                    grabBuffer.WaitOne();
 
-                // Increment loopCount for frame index
-                loopCount++;
+                    // Write all images in buffer to file
+                    for (int j = 0; j <= bufferSize / 2 && frameNumber < frameCount; j++)
+                    {
+                        pxd_saveTiff(1, baseFilename + "-" + (frameNumber++) + ".tif", j, 0, 0, -1, -1, 0, 0);
+                    }
+
+                    // Increment frameCount by half of bufferSize
+                    frameNumber += bufferSize / 2;
+
+                    // Release semaphore
+                    releaseBuffer.Release();
+                }
             }
             catch (Exception ex)
             {
