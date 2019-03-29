@@ -25,9 +25,10 @@ namespace FinisGUI
         public int frameCountRemainder { get; set; }
         public int imagesCaptured { get; set; }
 
-        public int bufferSize; // Number of frames in half the buffer
+        public int halfBufferSize; // Number of frames in half the buffer
         public int loopCount;
-        public int videoIndex; // Keep track of what major number to append to a video image
+        public int folderIndex; // Keep track of what major number to append to a video image
+        public string folderPath;
         #endregion
 
         /// <summary>
@@ -103,18 +104,8 @@ namespace FinisGUI
         {
             try
             {
-                // Determine indices for writing images
-                String videoBase = Constants.videoPath + dateTime + "/" + liveName;
-                videoIndex = 1;
-
-                // Video number
-                while (File.Exists(videoBase + videoIndex + "-1.tif"))
-                {
-                    videoIndex++;
-                }
-
                 // Number of frames stored in half the image buffer
-                bufferSize = 400;
+                halfBufferSize = 200;
 
 
                 pxd_PIXCIopen("", "", Constants.projectPath+"Resources/XCAPVideoSetup16Bit30Hz.fmt");
@@ -250,7 +241,7 @@ namespace FinisGUI
             try
             {
                 pxd_goLiveSeq(1, startBuf, startBuf + numFrames, 1, numFrames, videoPeriod);
-                while (pxd_goneLive(1, 0)) ;
+                waitForLiveSequence();
             }
             catch (Exception ex)
             {
@@ -263,22 +254,9 @@ namespace FinisGUI
         /// </summary>
         public void SaveSet()
         {
-            int i = 1;
-
-            while (true)
+            for (int j = 1; j <= frameCount; j++)
             {
-                if (File.Exists($"{Constants.videoPath}{dateTime}/{liveName}{i}-1.tif"))
-                {
-                    i++;
-                }
-                else
-                {
-                    for (int j = 1; j <= frameCount; j++)
-                    {
-                        pxd_saveTiff(1, $"{Constants.videoPath}{dateTime}/{liveName}{i}-{j}.tif", j, 0, 0, -1, -1, 0, 0);
-                    }
-                    break;
-                }
+                pxd_saveTiff(1, string.Join("", new string[] { folderPath, liveName, "-", j.ToString(), ".tif" }), j, 0, 0, -1, -1, 0, 0);
             }
         }
 
@@ -288,23 +266,9 @@ namespace FinisGUI
         /// <param name="countOffset"></param>
         public void SaveSet(int countOffset)
         {
-            int i = 1;
-
-            while (true)
+            for (int j = 1; j <= frameCountRemainder; j++)
             {
-                if (File.Exists($"{Constants.videoPath}{dateTime}/{liveName}{i}-1.tif"))
-                {
-                    i++;
-                }
-                else
-                {
-                    i--;
-                    for (int j = 1; j <= frameCount; j++)
-                    {
-                        pxd_saveTiff(1, $"{Constants.videoPath}{dateTime}/{liveName}{i}-{j + countOffset}.tif", j, 0, 0, -1, -1, 0, 0);
-                    }
-                    break;
-                }
+                pxd_saveTiff(1, string.Join("", new string[] { folderPath, liveName, "-", (j + countOffset).ToString(), ".tif" }), j, 0, 0, -1, -1, 0, 0);
             }
         }
 
@@ -317,22 +281,32 @@ namespace FinisGUI
         {
             try
             {
-                // Create base filename that will be saved to
-                string baseFilename = string.Concat(Constants.videoPath, dateTime, "/", liveName, videoIndex);
+                // Create base form of fileName that will be saved to
+                string baseFileName = folderPath + liveName + "-";
+                string fileName;
+                int index;
 
-                // Write all images in buffer to file
-                for (int j = 0; j <= bufferSize/2; j++)
+                // Write 200 frames of buffer beginning at startIndex to file
+                for (int j = 1; j <= halfBufferSize; j++)
                 {
-                    pxd_saveTiff(1, baseFilename + "-" + ( startIndex + j + (loopCount * (bufferSize/2))) + ".tif", j, 0, 0, -1, -1, 0, 0);
+                    index = j + (loopCount * halfBufferSize);
+                    fileName = string.Join("", new string[] { baseFileName, index.ToString(), ".tif" });
+                    pxd_saveTiff(1, fileName, j, 0, 0, -1, -1, 0, 0);
                 }
 
                 // Increment loopCount for frame index
                 loopCount++;
+                imagesCaptured += halfBufferSize;
             }
             catch (Exception ex)
             {
                 // ...
             }
+        }
+
+        public void waitForLiveSequence()
+        {
+            while (pxd_goneLive(1, 0)) ;
         }
 
         #region Function Imports

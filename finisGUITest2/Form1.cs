@@ -157,66 +157,44 @@ namespace FinisGUI
                 shutter.Open();
 
                 pxd.dateTime = DateTime.Now.ToString("MM-dd-yyyy-HHmm");
-                Directory.CreateDirectory($"{Constants.videoPath}/{pxd.dateTime}/");
 
-                if (pxd.frameCount <= 400)
+                // Determine indices for writing images
+                pxd.folderIndex = 1;
+                pxd.folderPath = Constants.videoPath + pxd.dateTime + "-";
+
+                // Video number
+                promptBox.Text += string.Join("", new string[] { pxd.folderPath, pxd.folderIndex.ToString(), "/", pxd.liveName, "-1.tif" }) + "\n";
+                while (File.Exists(string.Join("", new string[] { pxd.folderPath, pxd.folderIndex.ToString(), "/", pxd.liveName, "-1.tif" })))
                 {
-                    if (IsThirtyFPS)
-                    {
-                        vmb.UpdateTemperature();
-
-                        Timer.Reset();
-                        Timer.Start();
-                        pxd.Record(1, pxd.frameCount, 1);
-                        Timer.Stop();
-                    }
-                    else
-                    {
-                        Timer.Reset();
-                        Timer.Start();
-                        pxd.Record(1, pxd.frameCount, 2);
-                        Timer.Stop();
-                    }
-
-                    try
-                    {
-                        pxd.SaveSet();
-                    }
-                    catch (Exception ex)
-                    {
-                        promptBox.Text += $"Could not save images:\n{ex.Message}\n";
-                    }
+                    pxd.folderIndex++;
                 }
-                else // if (frameCount > 400)
+                pxd.folderPath = pxd.folderPath + pxd.folderIndex + "/";
+                Directory.CreateDirectory(pxd.folderPath);
+                pxd.frameCountRemainder = pxd.frameCount % 400;
+
+                Timer.Reset();
+                Timer.Start();
+                for (int i = 0; i < pxd.frameCount / 400; i++)
                 {
-                    Timer.Reset();
-                    Timer.Start();
-                    for (int i = 0; i < pxd.frameCount / 400; i++)
-                    {
-                        pxd.Record(1, 200, 1);
+                    pxd.Record(1, pxd.halfBufferSize, 1);
 
-                        Thread SAVE = new Thread(() => pxd.ThreadedSaveSetRange(1));
-                        SAVE.Start();
+                    Thread SAVE = new Thread(() => pxd.ThreadedSaveSetRange(1));
+                    SAVE.Start();
 
-                        pxd.Record(201, 200, 1);
-
-                        Thread SAVE2 = new Thread(() => pxd.ThreadedSaveSetRange(201));
-                        SAVE2.Start();
-                        pxd.imagesCaptured += 400;
-                    }
-                    if (pxd.frameCountRemainder != 0)
-                    {
-                        pxd.Record(1, pxd.frameCountRemainder, 1);
-                    }
+                    pxd.Record(201, pxd.halfBufferSize, 1);
+                    Thread SAVE2 = new Thread(() => pxd.ThreadedSaveSetRange(201));
+                    SAVE2.Start();
+                    promptBox.Text += $"Loop {i}\n";
+                }
+                //pxd.waitForLiveSequence();
+                if (pxd.frameCountRemainder != 0)
+                {
+                    pxd.Record(1, pxd.frameCountRemainder, 1);
                     Timer.Stop();
-
-
-                    if (pxd.frameCountRemainder != 0)
-                    {
-                        pxd.SaveSet(pxd.imagesCaptured);
-                        pxd.imagesCaptured += pxd.frameCountRemainder;
-                    }
+                    pxd.SaveSet(pxd.frameCount - pxd.frameCountRemainder);
+                    pxd.imagesCaptured += pxd.frameCountRemainder;
                 }
+                else Timer.Stop();
                 promptBox.Text += $"Capture Time: {(float)Timer.ElapsedMilliseconds / 1000}\n";
                 promptBox.Text += $"Images Captured: {pxd.imagesCaptured}\n";
                 fpsActual = ((pxd.imagesCaptured) / ((float)Timer.ElapsedMilliseconds / 1000));
