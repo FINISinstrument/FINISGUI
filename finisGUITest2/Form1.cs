@@ -183,14 +183,15 @@ namespace FinisGUI
                 Semaphore second_readFromBuffer = new Semaphore(0, 1);
 
                 // Initialize save threads
-                Thread SAVE = new Thread(() => pxd.ThreadedSaveSetRange(true, first_readFromBuffer, first_writeToBuffer));
-                Thread SAVE2 = new Thread(() => pxd.ThreadedSaveSetRange(false, second_readFromBuffer, second_writeToBuffer));
+                Thread SAVE = new Thread(() => pxd.ThreadedSaveSetRange(true, first_readFromBuffer, second_writeToBuffer));
+                Thread SAVE2 = new Thread(() => pxd.ThreadedSaveSetRange(false, second_readFromBuffer, first_writeToBuffer));
                 SAVE.Start();
                 SAVE2.Start();
 
                 // Iterate
                 for (int i = 0; i < pxd.maxLoopCount; i++) 
                 {
+                    promptBox.Text += "Main thread I : {i}\n";
                     first_writeToBuffer.WaitOne();
                     // Write first part of buffer
                     pxd.Record(1, pxd.halfBufferSize, 1);
@@ -198,9 +199,14 @@ namespace FinisGUI
                     first_readFromBuffer.Release();
                     // Write second part of buffer
                     second_writeToBuffer.WaitOne();
-                    pxd.Record(201, pxd.halfBufferSize, 1);
-                    // Read second part of buffer
-                    second_readFromBuffer.Release();
+                    
+                    // If we don't need the second half of the buffer, continue on
+                    if (pxd.maxLoopCount % 2 == 1 && i == pxd.maxLoopCount - 1)
+                    {
+                        pxd.Record(201, pxd.halfBufferSize, 1);
+                        // Read second part of buffer
+                        second_readFromBuffer.Release();
+                    }
                 }
                 Timer.Stop();
                 /*for (int i = 0; i < pxd.frameCount / 400; i++)
