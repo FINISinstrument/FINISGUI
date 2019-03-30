@@ -290,18 +290,16 @@ namespace FinisGUI
                 string fileName;
                 int index;
 
-                int thisMaxLoop = maxLoopCount;
-
                 // Get offset, based off of boolean value
                 int offset = 1;
                 if (!first_half)
                 {
                     offset += halfBufferSize;
-                    thisMaxLoop++; // Update maxLoopCount if in second half
+                    maxLoopCount++; // Update maxLoopCount if in second half
                 }
 
                 // Loop until we have finished writing all frames
-                while (loopCount + 1 < thisMaxLoop)
+                do
                 {
                     // Wait for semaphore to be ready
                     grabBuffer.WaitOne();
@@ -322,7 +320,7 @@ namespace FinisGUI
 
                     // Release semaphore
                     releaseBuffer.Release();
-                }
+                } while (loopCount + 1 < maxLoopCount);
             }
             catch (Exception ex)
             {
