@@ -27,6 +27,7 @@ namespace FinisGUI
 
         public int halfBufferSize; // Number of frames in half the buffer
         public int loopCount;
+        public int maxLoopCount; // Number of thread loops for saving from buffer
         public int folderIndex; // Keep track of what major number to append to a video image
         public string folderPath;
         #endregion
@@ -274,10 +275,13 @@ namespace FinisGUI
 
         /// <summary>
         /// Function for threaded saving with specified starting indes.
-        /// startIndex corresponds to beginning frame buffer and how frames are saved.
+        /// boolean to determine whether we're saving the first half of buffer
+        /// Semaphores are used to coordinate timing with camera writing to buffer
         /// </summary>
-        /// <param name="startIndex"></param>
-        public void ThreadedSaveSetRange(int startIndex)
+        /// <param name = "start_index"></param>
+        /// <param name = "grabBuffer"></param>
+        /// <param name = "releaseBuffer"></param>
+        public void ThreadedSaveSetRange(bool first_half, Semaphore grabBuffer, Semaphore releaseBuffer)
         {
             try
             {
@@ -286,17 +290,37 @@ namespace FinisGUI
                 string fileName;
                 int index;
 
-                // Write 200 frames of buffer beginning at startIndex to file
-                for (int j = 1; j <= halfBufferSize; j++)
+                // Get offset, based off of boolean value
+                int offset = 1;
+                if (!first_half)
                 {
-                    index = j + (loopCount * halfBufferSize);
-                    fileName = string.Join("", new string[] { baseFileName, index.ToString(), ".tif" });
-                    pxd_saveTiff(1, fileName, j, 0, 0, -1, -1, 0, 0);
+                    offset += halfBufferSize;
+                    maxLoopCount++; // Update maxLoopCount if in second half
                 }
 
-                // Increment loopCount for frame index
-                loopCount++;
-                imagesCaptured += halfBufferSize;
+                // Loop until we have finished writing all frames
+                do
+                {
+                    // Wait for semaphore to be ready
+                    grabBuffer.WaitOne();
+
+                    // Write 200 frames of buffer beginning at startIndex to file, or remaining buffer, whichever is smaller
+                    for (int j = 1; j <= halfBufferSize && imagesCaptured < frameCount; j++)
+                    {
+                        // Determine filename to save image
+                        index = j + (loopCount * halfBufferSize);
+                        fileName = string.Join("", new string[] { baseFileName, index.ToString(), ".tif" });
+                        pxd_saveTiff(1, fileName, j, 0, 0, -1, -1, 0, 0);
+                        // Increment images saved
+                        imagesCaptured++;
+                    }
+
+                    // Increment loopCount for frame index
+                    loopCount++;
+
+                    // Release semaphore
+                    releaseBuffer.Release();
+                } while (loopCount + 1 < maxLoopCount);
             }
             catch (Exception ex)
             {

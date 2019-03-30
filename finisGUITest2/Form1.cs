@@ -142,6 +142,7 @@ namespace FinisGUI
             {
                 pxd.imagesCaptured = 0;
                 pxd.loopCount = 0;
+                pxd.maxLoopCount = (pxd.frameCount - 1) / pxd.halfBufferSize + 1;
                 if (pxd.IsStreaming)
                 {
                     pxd.StopStreaming();
@@ -174,7 +175,35 @@ namespace FinisGUI
 
                 Timer.Reset();
                 Timer.Start();
-                for (int i = 0; i < pxd.frameCount / 400; i++)
+
+                // Create semaphores
+                Semaphore first_writeToBuffer = new Semaphore(1, 1);
+                Semaphore first_readFromBuffer = new Semaphore(0, 1);
+                Semaphore second_writeToBuffer = new Semaphore(1, 1);
+                Semaphore second_readFromBuffer = new Semaphore(0, 1);
+
+                // Initialize save threads
+                Thread SAVE = new Thread(() => pxd.ThreadedSaveSetRange(true, first_readFromBuffer, first_writeToBuffer));
+                Thread SAVE2 = new Thread(() => pxd.ThreadedSaveSetRange(false, second_readFromBuffer, second_writeToBuffer));
+                SAVE.Start();
+                SAVE2.Start();
+
+                // Iterate
+                for (int i = 0; i < pxd.maxLoopCount; i++) 
+                {
+                    first_writeToBuffer.WaitOne();
+                    // Write first part of buffer
+                    pxd.Record(1, pxd.halfBufferSize, 1);
+                    // Read first part of buffer
+                    first_readFromBuffer.Release();
+                    // Write second part of buffer
+                    second_writeToBuffer.WaitOne();
+                    pxd.Record(201, pxd.halfBufferSize, 1);
+                    // Read second part of buffer
+                    second_readFromBuffer.Release();
+                }
+                Timer.Stop();
+                /*for (int i = 0; i < pxd.frameCount / 400; i++)
                 {
                     pxd.Record(1, pxd.halfBufferSize, 1);
 
@@ -195,6 +224,7 @@ namespace FinisGUI
                     pxd.imagesCaptured += pxd.frameCountRemainder;
                 }
                 else Timer.Stop();
+                */
                 promptBox.Text += $"Capture Time: {(float)Timer.ElapsedMilliseconds / 1000}\n";
                 promptBox.Text += $"Images Captured: {pxd.imagesCaptured}\n";
                 fpsActual = ((pxd.imagesCaptured) / ((float)Timer.ElapsedMilliseconds / 1000));
@@ -759,37 +789,6 @@ namespace FinisGUI
             PXD.pxd_renderStretchDIBits(1, 1, 0, 0, -1, -1, 0, hDC, 0, 0, ImagePictureBox.Width, ImagePictureBox.Height, 0);
 
             Draw.ReleaseHdc(hDC); // Release ImagePictureBox handle.
-        }
-
-        private void ThreadedSave()
-        {
-            try
-            {
-                for (int k = 1; k <= 200; k++)
-                {
-                    //PXD.pxd_saveTiff(1, $"c:/FINIS/Images/Video/{pxd.liveName}{fileBegin}-{k + (400 * pxd.loopCount)}.tif", k, 0, 0, -1, -1, 0, 0);
-                }
-            }
-            catch (Exception ex)
-            {
-                promptBox.Text += $"Could not save images:\n{ex.Message}\n";
-            }
-        }
-
-        private void ThreadedSave2()
-        {
-            try
-            {
-                for (int k = 201; k <= 400; k++)
-                {
-                    //PXD.pxd_saveTiff(1, $"c:/FINIS/Images/Video/{pxd.liveName}{fileBegin}-{k + (400 * pxd.loopCount)}.tif", k, 0, 0, -1, -1, 0, 0);
-                }
-                pxd.loopCount++;
-            }
-            catch (Exception ex)
-            {
-                promptBox.Text += $"Could not save images:\n{ex.Message}\n";
-            }
         }
 
         /*private void StartAcquisition()
