@@ -9,7 +9,25 @@ using VectorNav.Protocol.Uart;
 
 namespace FinisGUI
 {
-    class IMU
+    public class IMU
     {
+        //const string sensorPort = "COM12";
+        //const UInt32 sensorBaudrate = 115200;
+        public bool ConnectSensor(string sensorPort, UInt32 sensorBaudrate = 115200)
+        {
+            var vs = new VnSensor();
+            vs.Connect(sensorPort, sensorBaudrate);
+            if (vs.IsConnected)
+            {
+                return true;
+            }
+            return false;
+        }
+        
+
+
+        
+        
+   
     }
 }
