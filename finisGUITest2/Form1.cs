@@ -17,6 +17,7 @@ using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using AVT.VmbAPINET;
+using System.Text;
 
 namespace FinisGUI
 {
@@ -163,13 +164,13 @@ namespace FinisGUI
                 pxd.folderPath = Constants.videoPath + pxd.dateTime + "-";
 
                 // Video number
-                promptBox.Text += string.Join("", new string[] { pxd.folderPath, pxd.folderIndex.ToString(), "/", pxd.liveName, "-1.tif" }) + "\n";
                 while (File.Exists(string.Join("", new string[] { pxd.folderPath, pxd.folderIndex.ToString(), "/", pxd.liveName, "-1.tif" })))
                 {
                     pxd.folderIndex++;
                 }
                 pxd.folderPath = pxd.folderPath + pxd.folderIndex + "/";
                 Directory.CreateDirectory(pxd.folderPath);
+                promptBox.Text += "Folder created at " + pxd.folderPath + "\n";
                 pxd.frameCountRemainder = pxd.frameCount % 400;
 
                 Timer.Reset();
@@ -201,6 +202,21 @@ namespace FinisGUI
                 promptBox.Text += $"Actual Frame Rate: {fpsActual}\n";
 
                 shutter.Close();
+                int j = 0;
+                FileStream filesMissed = new FileStream(pxd.folderPath + "MissingFrames.txt", FileMode.OpenOrCreate);
+                promptBox.Text += "Frames Missed: \"";
+                filesMissed.Write(Encoding.ASCII.GetBytes("Frames Missed:\n"), 0, 0);
+                for (int i = 1; i <= pxd.frameCount; i++)
+                {
+                    if (!File.Exists(pxd.folderPath + pxd.liveName + "-" + i.ToString() + ".tif"))
+                    {
+                        filesMissed.Write(Encoding.ASCII.GetBytes($"{i}\n"), 0, 0);
+                        promptBox.Text += $"{i}, ";
+                        j++;
+                    }
+                }
+                promptBox.Text += $"\"\nTotal: {j}\n";
+                filesMissed.Write(Encoding.ASCII.GetBytes($"Total: {j}\n"), 0, 0);
             }
             catch (VimbaException ve)
             {
@@ -643,7 +659,7 @@ namespace FinisGUI
             promptBox.Text += "Files Missed: \"";
             for (int i = 1; i <= pxd.frameCount; i++)
             {
-                if (!File.Exists($"{Constants.videoPath}{pxd.liveName}{i}.tif"))
+                if (!File.Exists($"{Constants.videoPath}03-30-2019-1031-1/videoFrame-{i}.tif"))
                 {
                     promptBox.Text += $"{i}, ";
                     j++;
