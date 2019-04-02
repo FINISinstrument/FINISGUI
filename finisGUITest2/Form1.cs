@@ -185,7 +185,6 @@ namespace FinisGUI
                     pxd.Record(201, pxd.halfBufferSize, 1);
                     Thread SAVE2 = new Thread(() => pxd.ThreadedSaveSetRange(201));
                     SAVE2.Start();
-                    promptBox.Text += $"Loop {i}\n";
                 }
                 //pxd.waitForLiveSequence();
                 if (pxd.frameCountRemainder != 0)
@@ -196,12 +195,14 @@ namespace FinisGUI
                     pxd.imagesCaptured += pxd.frameCountRemainder;
                 }
                 else Timer.Stop();
+                shutter.Close();
+
+                Thread.Sleep(2000);
                 promptBox.Text += $"Capture Time: {(float)Timer.ElapsedMilliseconds / 1000}\n";
                 promptBox.Text += $"Images Captured: {pxd.imagesCaptured}\n";
                 fpsActual = ((pxd.imagesCaptured) / ((float)Timer.ElapsedMilliseconds / 1000));
                 promptBox.Text += $"Actual Frame Rate: {fpsActual}\n";
 
-                shutter.Close();
                 int j = 0;
                 StreamWriter filesMissed = new StreamWriter(pxd.folderPath + "MissedFrames.txt", true);
                 promptBox.Text += "Frames Missed: \"";

@@ -26,7 +26,7 @@ namespace FinisGUI
         public int imagesCaptured { get; set; }
 
         public int halfBufferSize; // Number of frames in half the buffer
-        public int loopCount;
+        public int loopCount = 0;
         public int folderIndex; // Keep track of what major number to append to a video image
         public string folderPath;
         #endregion
@@ -287,15 +287,15 @@ namespace FinisGUI
                 int index;
 
                 // Write 200 frames of buffer beginning at startIndex to file
-                for (int j = 1; j <= halfBufferSize; j++)
+                for (int j = startIndex; j < startIndex + halfBufferSize; j++)
                 {
-                    index = j + (loopCount * halfBufferSize);
+                    index = j + (loopCount * 2 * halfBufferSize);
                     fileName = string.Join("", new string[] { baseFileName, index.ToString(), ".tif" });
                     pxd_saveTiff(1, fileName, j, 0, 0, -1, -1, 0, 0);
                 }
 
                 // Increment loopCount for frame index
-                loopCount++;
+                if (startIndex != 1) loopCount++;
                 imagesCaptured += halfBufferSize;
             }
             catch (Exception ex)
