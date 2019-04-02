@@ -203,20 +203,21 @@ namespace FinisGUI
 
                 shutter.Close();
                 int j = 0;
-                FileStream filesMissed = new FileStream(pxd.folderPath + "MissingFrames.txt", FileMode.OpenOrCreate);
+                StreamWriter filesMissed = new StreamWriter(pxd.folderPath + "MissedFrames.txt", true);
                 promptBox.Text += "Frames Missed: \"";
-                filesMissed.Write(Encoding.ASCII.GetBytes("Frames Missed:\n"), 0, 0);
+                filesMissed.WriteLine("Frames Missed:\n");
                 for (int i = 1; i <= pxd.frameCount; i++)
                 {
                     if (!File.Exists(pxd.folderPath + pxd.liveName + "-" + i.ToString() + ".tif"))
                     {
-                        filesMissed.Write(Encoding.ASCII.GetBytes($"{i}\n"), 0, 0);
+                        filesMissed.WriteLine($"{i}\n");
                         promptBox.Text += $"{i}, ";
                         j++;
                     }
                 }
                 promptBox.Text += $"\"\nTotal: {j}\n";
-                filesMissed.Write(Encoding.ASCII.GetBytes($"Total: {j}\n"), 0, 0);
+                filesMissed.WriteLine($"Total: {j}\n");
+                filesMissed.Close();
             }
             catch (VimbaException ve)
             {
