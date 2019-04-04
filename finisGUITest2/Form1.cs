@@ -925,10 +925,25 @@ namespace FinisGUI
 
         private void Useless_Button_Click(object sender, EventArgs e)
         {
-            string datetime = $"{DateTime.Now.ToString("MM-dd-yyyy-HHmm")}";
-            promptBox.Text += datetime;
-            Directory.CreateDirectory($"{Constants.videoPath}{datetime}/");
-            File.Create($"{Constants.videoPath}{datetime}/TestFile.txt");
+            //Initialize the sensor port
+            string sensorPort = "COM12";
+            uint sensorBaudrate = 115200;
+            IMU imu = new IMU(sensorPort, sensorBaudrate);
+            imu.ConnectSensor();
+            if (imu.isConnected())
+            {
+                promptBox.Text += "IMU Sucessfully connected";
+            }
+            else
+            {
+                promptBox.Text += "Failed to connect IMU";
+            }
+            
+
+            string data = imu.GetYPR();
+            IMUData.Text = data;
+            //StreamWriter imuData = new StreamWriter(Constants.infoPath + "MissedFrames.txt", true);
+            //imuData.WriteLine("");
         }
     }
 }

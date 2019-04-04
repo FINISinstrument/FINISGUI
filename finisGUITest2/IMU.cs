@@ -22,20 +22,38 @@ namespace FinisGUI
             this.sensorPort = sensorPort;
             this.sensorBaudrate = sensorBaudrate;
         }
+
+        ~IMU()
+        {
+            if (vs.IsConnected)
+            {
+                vs.Disconnect();
+            }
+            
+        } 
         
 
         
         //const string sensorPort = "COM12";
         //const UInt32 sensorBaudrate = 115200;
-        public bool ConnectSensor()
+        public void ConnectSensor()
         {
-            //var vs = new VnSensor();
-            vs.Connect(sensorPort, sensorBaudrate);
+            if (!vs.IsConnected)
+            {
+                vs.Connect(sensorPort, sensorBaudrate);
+            }
+        }
+
+        public bool isConnected()
+        {
             if (vs.IsConnected)
             {
                 return true;
             }
-            return false;
+            else
+            {
+                return false;
+            }
         }
 
         public bool GetTime()
@@ -43,6 +61,16 @@ namespace FinisGUI
             //vs.ReadGpsSolutionLla;
 
             return true;
+        }
+
+        public string GetYPR()
+        {
+            if (vs.IsConnected)
+            {
+                var ymaa = vs.ReadYawPitchRollMagneticAccelerationAndAngularRates();
+                return ymaa.YawPitchRoll.ToString();
+            }
+            return ("IMU NOT CONNECTED");
         }
         
 

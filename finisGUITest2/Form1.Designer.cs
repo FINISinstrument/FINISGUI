@@ -92,6 +92,7 @@
             this.AppendImages_Button = new System.Windows.Forms.Button();
             this.ContinuityCheck_Button = new System.Windows.Forms.Button();
             this.Useless_Button = new System.Windows.Forms.Button();
+            this.IMUData = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.ImagePictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Timer1)).BeginInit();
             this.SuspendLayout();
@@ -101,7 +102,7 @@
             this.ImagePictureBox.BackColor = System.Drawing.Color.LightCyan;
             this.ImagePictureBox.BackgroundImage = global::FinisGUI.Properties.Resources.goldeye_g;
             this.ImagePictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ImagePictureBox.Location = new System.Drawing.Point(0, 0);
+            this.ImagePictureBox.Location = new System.Drawing.Point(-1, 0);
             this.ImagePictureBox.Name = "ImagePictureBox";
             this.ImagePictureBox.Size = new System.Drawing.Size(400, 320);
             this.ImagePictureBox.TabIndex = 0;
@@ -112,7 +113,7 @@
             // 
             this.Snap_Button.BackColor = System.Drawing.Color.White;
             this.Snap_Button.ForeColor = System.Drawing.Color.Black;
-            this.Snap_Button.Location = new System.Drawing.Point(12, 406);
+            this.Snap_Button.Location = new System.Drawing.Point(12, 424);
             this.Snap_Button.Name = "Snap_Button";
             this.Snap_Button.Size = new System.Drawing.Size(60, 47);
             this.Snap_Button.TabIndex = 2;
@@ -124,7 +125,7 @@
             // 
             this.Record_Button.BackColor = System.Drawing.Color.White;
             this.Record_Button.ForeColor = System.Drawing.Color.Black;
-            this.Record_Button.Location = new System.Drawing.Point(12, 459);
+            this.Record_Button.Location = new System.Drawing.Point(12, 477);
             this.Record_Button.Name = "Record_Button";
             this.Record_Button.Size = new System.Drawing.Size(60, 47);
             this.Record_Button.TabIndex = 3;
@@ -245,7 +246,7 @@
             // 
             this.Live_Button.BackColor = System.Drawing.Color.White;
             this.Live_Button.ForeColor = System.Drawing.Color.Black;
-            this.Live_Button.Location = new System.Drawing.Point(12, 353);
+            this.Live_Button.Location = new System.Drawing.Point(12, 371);
             this.Live_Button.Name = "Live_Button";
             this.Live_Button.Size = new System.Drawing.Size(60, 47);
             this.Live_Button.TabIndex = 20;
@@ -257,7 +258,7 @@
             // 
             this.FPS_Button.BackColor = System.Drawing.Color.White;
             this.FPS_Button.ForeColor = System.Drawing.Color.Black;
-            this.FPS_Button.Location = new System.Drawing.Point(144, 459);
+            this.FPS_Button.Location = new System.Drawing.Point(144, 477);
             this.FPS_Button.Name = "FPS_Button";
             this.FPS_Button.Size = new System.Drawing.Size(60, 47);
             this.FPS_Button.TabIndex = 26;
@@ -269,7 +270,7 @@
             // 
             this.FPS_Label.AutoSize = true;
             this.FPS_Label.BackColor = System.Drawing.Color.LightCyan;
-            this.FPS_Label.Location = new System.Drawing.Point(185, 493);
+            this.FPS_Label.Location = new System.Drawing.Point(185, 511);
             this.FPS_Label.Name = "FPS_Label";
             this.FPS_Label.Size = new System.Drawing.Size(19, 13);
             this.FPS_Label.TabIndex = 28;
@@ -361,7 +362,7 @@
             // 
             this.OpenShutter_Button.BackColor = System.Drawing.Color.White;
             this.OpenShutter_Button.ForeColor = System.Drawing.Color.Black;
-            this.OpenShutter_Button.Location = new System.Drawing.Point(78, 353);
+            this.OpenShutter_Button.Location = new System.Drawing.Point(78, 371);
             this.OpenShutter_Button.Name = "OpenShutter_Button";
             this.OpenShutter_Button.Size = new System.Drawing.Size(60, 47);
             this.OpenShutter_Button.TabIndex = 51;
@@ -373,7 +374,7 @@
             // 
             this.Gain_Button.BackColor = System.Drawing.Color.White;
             this.Gain_Button.ForeColor = System.Drawing.Color.Black;
-            this.Gain_Button.Location = new System.Drawing.Point(144, 353);
+            this.Gain_Button.Location = new System.Drawing.Point(144, 371);
             this.Gain_Button.Name = "Gain_Button";
             this.Gain_Button.Size = new System.Drawing.Size(60, 47);
             this.Gain_Button.TabIndex = 52;
@@ -385,7 +386,7 @@
             // 
             this.Shutter_Label.AutoSize = true;
             this.Shutter_Label.BackColor = System.Drawing.Color.LightCyan;
-            this.Shutter_Label.Location = new System.Drawing.Point(99, 387);
+            this.Shutter_Label.Location = new System.Drawing.Point(99, 405);
             this.Shutter_Label.Name = "Shutter_Label";
             this.Shutter_Label.Size = new System.Drawing.Size(39, 13);
             this.Shutter_Label.TabIndex = 53;
@@ -395,7 +396,7 @@
             // 
             this.Gain_Label.AutoSize = true;
             this.Gain_Label.BackColor = System.Drawing.Color.LightCyan;
-            this.Gain_Label.Location = new System.Drawing.Point(175, 387);
+            this.Gain_Label.Location = new System.Drawing.Point(175, 405);
             this.Gain_Label.Name = "Gain_Label";
             this.Gain_Label.Size = new System.Drawing.Size(29, 13);
             this.Gain_Label.TabIndex = 56;
@@ -405,7 +406,7 @@
             // 
             this.EmptyVideoFolder_Button.BackColor = System.Drawing.Color.White;
             this.EmptyVideoFolder_Button.ForeColor = System.Drawing.Color.Black;
-            this.EmptyVideoFolder_Button.Location = new System.Drawing.Point(210, 406);
+            this.EmptyVideoFolder_Button.Location = new System.Drawing.Point(210, 424);
             this.EmptyVideoFolder_Button.Name = "EmptyVideoFolder_Button";
             this.EmptyVideoFolder_Button.Size = new System.Drawing.Size(86, 47);
             this.EmptyVideoFolder_Button.TabIndex = 57;
@@ -417,7 +418,7 @@
             // 
             this.EmptyStillFolder_Button.BackColor = System.Drawing.Color.White;
             this.EmptyStillFolder_Button.ForeColor = System.Drawing.Color.Black;
-            this.EmptyStillFolder_Button.Location = new System.Drawing.Point(210, 459);
+            this.EmptyStillFolder_Button.Location = new System.Drawing.Point(210, 477);
             this.EmptyStillFolder_Button.Name = "EmptyStillFolder_Button";
             this.EmptyStillFolder_Button.Size = new System.Drawing.Size(86, 46);
             this.EmptyStillFolder_Button.TabIndex = 58;
@@ -429,7 +430,7 @@
             // 
             this.ShutterLock_Button.BackColor = System.Drawing.Color.White;
             this.ShutterLock_Button.ForeColor = System.Drawing.Color.Black;
-            this.ShutterLock_Button.Location = new System.Drawing.Point(78, 459);
+            this.ShutterLock_Button.Location = new System.Drawing.Point(78, 477);
             this.ShutterLock_Button.Name = "ShutterLock_Button";
             this.ShutterLock_Button.Size = new System.Drawing.Size(60, 47);
             this.ShutterLock_Button.TabIndex = 59;
@@ -441,7 +442,7 @@
             // 
             this.Bits_Button.BackColor = System.Drawing.Color.White;
             this.Bits_Button.ForeColor = System.Drawing.Color.Black;
-            this.Bits_Button.Location = new System.Drawing.Point(144, 406);
+            this.Bits_Button.Location = new System.Drawing.Point(144, 424);
             this.Bits_Button.Name = "Bits_Button";
             this.Bits_Button.Size = new System.Drawing.Size(60, 47);
             this.Bits_Button.TabIndex = 60;
@@ -453,7 +454,7 @@
             // 
             this.Bits_Label.AutoSize = true;
             this.Bits_Label.BackColor = System.Drawing.Color.LightCyan;
-            this.Bits_Label.Location = new System.Drawing.Point(171, 440);
+            this.Bits_Label.Location = new System.Drawing.Point(171, 458);
             this.Bits_Label.Name = "Bits_Label";
             this.Bits_Label.Size = new System.Drawing.Size(33, 13);
             this.Bits_Label.TabIndex = 61;
@@ -462,7 +463,7 @@
             // ReinitializeSystem_Button
             // 
             this.ReinitializeSystem_Button.BackColor = System.Drawing.Color.DarkGray;
-            this.ReinitializeSystem_Button.Location = new System.Drawing.Point(210, 351);
+            this.ReinitializeSystem_Button.Location = new System.Drawing.Point(210, 369);
             this.ReinitializeSystem_Button.Name = "ReinitializeSystem_Button";
             this.ReinitializeSystem_Button.Size = new System.Drawing.Size(86, 47);
             this.ReinitializeSystem_Button.TabIndex = 62;
@@ -474,7 +475,7 @@
             // LockReinitialize_Button
             // 
             this.LockReinitialize_Button.BackColor = System.Drawing.Color.White;
-            this.LockReinitialize_Button.Location = new System.Drawing.Point(210, 382);
+            this.LockReinitialize_Button.Location = new System.Drawing.Point(210, 400);
             this.LockReinitialize_Button.Name = "LockReinitialize_Button";
             this.LockReinitialize_Button.Size = new System.Drawing.Size(70, 23);
             this.LockReinitialize_Button.TabIndex = 63;
@@ -486,7 +487,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.Location = new System.Drawing.Point(22, 323);
+            this.label1.Location = new System.Drawing.Point(22, 341);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(44, 13);
             this.label1.TabIndex = 64;
@@ -496,7 +497,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.BackColor = System.Drawing.Color.Transparent;
-            this.label4.Location = new System.Drawing.Point(22, 336);
+            this.label4.Location = new System.Drawing.Point(22, 354);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(40, 13);
             this.label4.TabIndex = 65;
@@ -506,7 +507,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.BackColor = System.Drawing.Color.Transparent;
-            this.label5.Location = new System.Drawing.Point(87, 336);
+            this.label5.Location = new System.Drawing.Point(87, 354);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(40, 13);
             this.label5.TabIndex = 67;
@@ -516,7 +517,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.BackColor = System.Drawing.Color.Transparent;
-            this.label6.Location = new System.Drawing.Point(87, 323);
+            this.label6.Location = new System.Drawing.Point(87, 341);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(41, 13);
             this.label6.TabIndex = 66;
@@ -526,7 +527,7 @@
             // 
             this.label10.AutoSize = true;
             this.label10.BackColor = System.Drawing.Color.Transparent;
-            this.label10.Location = new System.Drawing.Point(231, 335);
+            this.label10.Location = new System.Drawing.Point(231, 353);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(40, 13);
             this.label10.TabIndex = 71;
@@ -536,7 +537,7 @@
             // 
             this.label11.AutoSize = true;
             this.label11.BackColor = System.Drawing.Color.Transparent;
-            this.label11.Location = new System.Drawing.Point(231, 322);
+            this.label11.Location = new System.Drawing.Point(231, 340);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(41, 13);
             this.label11.TabIndex = 70;
@@ -546,7 +547,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.BackColor = System.Drawing.Color.Transparent;
-            this.label8.Location = new System.Drawing.Point(152, 336);
+            this.label8.Location = new System.Drawing.Point(152, 354);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(40, 13);
             this.label8.TabIndex = 73;
@@ -556,7 +557,7 @@
             // 
             this.label9.AutoSize = true;
             this.label9.BackColor = System.Drawing.Color.Transparent;
-            this.label9.Location = new System.Drawing.Point(152, 323);
+            this.label9.Location = new System.Drawing.Point(152, 341);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(43, 13);
             this.label9.TabIndex = 72;
@@ -576,7 +577,7 @@
             // 
             this.CloseShutter_Button.BackColor = System.Drawing.Color.White;
             this.CloseShutter_Button.ForeColor = System.Drawing.Color.Black;
-            this.CloseShutter_Button.Location = new System.Drawing.Point(78, 407);
+            this.CloseShutter_Button.Location = new System.Drawing.Point(78, 425);
             this.CloseShutter_Button.Name = "CloseShutter_Button";
             this.CloseShutter_Button.Size = new System.Drawing.Size(60, 47);
             this.CloseShutter_Button.TabIndex = 75;
@@ -620,7 +621,7 @@
             // Useless_Button
             // 
             this.Useless_Button.BackColor = System.Drawing.Color.White;
-            this.Useless_Button.Location = new System.Drawing.Point(320, 341);
+            this.Useless_Button.Location = new System.Drawing.Point(320, 359);
             this.Useless_Button.Name = "Useless_Button";
             this.Useless_Button.Size = new System.Drawing.Size(75, 52);
             this.Useless_Button.TabIndex = 79;
@@ -628,12 +629,23 @@
             this.Useless_Button.UseVisualStyleBackColor = false;
             this.Useless_Button.Click += new System.EventHandler(this.Useless_Button_Click);
             // 
+            // IMUData
+            // 
+            this.IMUData.AutoSize = true;
+            this.IMUData.Location = new System.Drawing.Point(22, 323);
+            this.IMUData.Name = "IMUData";
+            this.IMUData.Size = new System.Drawing.Size(27, 13);
+            this.IMUData.TabIndex = 80;
+            this.IMUData.Text = "IMU";
+            this.IMUData.UseMnemonic = false;
+            // 
             // Form1
             // 
             this.AcceptButton = this.PicCount_Button;
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
             this.BackColor = System.Drawing.Color.Silver;
             this.ClientSize = new System.Drawing.Size(755, 525);
+            this.Controls.Add(this.IMUData);
             this.Controls.Add(this.Useless_Button);
             this.Controls.Add(this.ContinuityCheck_Button);
             this.Controls.Add(this.AppendImages_Button);
@@ -748,5 +760,6 @@
         private System.Windows.Forms.Button AppendImages_Button;
         private System.Windows.Forms.Button ContinuityCheck_Button;
         private System.Windows.Forms.Button Useless_Button;
+        private System.Windows.Forms.Label IMUData;
     }
 }
