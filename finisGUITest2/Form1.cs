@@ -545,33 +545,27 @@ namespace FinisGUI
                     }
                     vmb.Close();
                     Thread.Sleep(100);
-                    vmb.Initialize();
+
+                    int i = vmb.Initialize();
+                    if (i < 0)
+                    {
+                        MessageBox.Show("Camera Open Failed");
+                        Application.Exit();
+                    }
 
                     string FORMAT = "";
                     string FORMATFILE = "";
                     FORMATFILE = $"{Constants.projectPath}Resources/XCAPVideoSetup16Bit30Hz.fmt";
                     PXD.pxd_PIXCIclose();
                     Thread.Sleep(100);
-                    int i = PXD.pxd_PIXCIopen("", FORMAT, FORMATFILE);
+                    i = PXD.pxd_PIXCIopen("", FORMAT, FORMATFILE);
                     Thread.Sleep(100);
                     if (i < 0)
                     {
-                        MessageBox.Show("Open Failed");
+                        MessageBox.Show("PXD Open Failed");
                         PXD.pxd_mesgFault(1);
                         Application.Exit();
                     }
-
-                    /*cameras = sys.Cameras;
-                    promptBox.Text += "Vimba Restarted\n";
-                    camera = sys.OpenCameraByID("DEV_64AA2C448F1F2349", VmbAccessModeType.VmbAccessModeFull);
-                    promptBox.Text += "Camera Opened\n";
-                    feature = camera.Features["ExposureTime"];
-                    feature.FloatValue = 33000;
-                    feature = camera.Features["AcquisitionFrameRate"];
-                    feature.FloatValue = 30.0f;
-                    camera.Features["SensorGain"].EnumValue = "Gain1";
-                    camera.Features["SensorTemperatureSetpointValue"].IntValue = 20;
-                    camera.Features["SensorTemperatureSetpointSelector"].IntValue = 1;*/
 
                     promptBox.Text += "System Fully Booted\n";
                     restartLocked = true;
@@ -673,6 +667,11 @@ namespace FinisGUI
         #endregion
         
         #region Other Functions
+        /// <summary>
+        /// This function executes as the program boots, or 'Loads'. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Form1_Load(object sender, System.EventArgs e)
         {
             try
@@ -713,7 +712,12 @@ namespace FinisGUI
                 if (!vmb.IsOpen)
                 {
                     Thread.Sleep(5000);
-                    vmb.Initialize();
+                    int i = vmb.Initialize();
+                    if (i < 0)
+                    {
+                        MessageBox.Show("Camera Open Failed");
+                        Application.Exit();
+                    }
                 }
                 if (!vmb.IsOpen)
                 {
