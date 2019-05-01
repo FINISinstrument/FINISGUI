@@ -18,7 +18,7 @@ namespace FinisGUI
         public Camera camera { get; set; }
         public int exposureTime { get; set; }
         public bool cameraOpen { get; set; }
-        public bool acquiring { get; set; }
+        public bool IsAcquiring { get; set; }
         public bool highGain { get; set; }
         public double temperature { get; set; }
         public bool IsOpen { get; set; }
@@ -72,10 +72,10 @@ namespace FinisGUI
         /// </summary>
         public void StartAcquisition()
         {
-            if (!acquiring)
+            if (!IsAcquiring)
             {
                 camera.Features["AcquisitionStart"].RunCommand();   //Some features, such as AcquisitionStart and AcquisitionStop are commands without any member variables associated with them
-                acquiring = true;
+                IsAcquiring = true;
                 Thread.Sleep(100);
             }
         }
