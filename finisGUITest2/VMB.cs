@@ -22,13 +22,17 @@ namespace FinisGUI
         public bool highGain { get; set; }
         public double temperature { get; set; }
         public bool IsOpen { get; set; }
+        public bool VMBOpen { get; set; }
 
         public string Initialize()
         {
             try
             {
+                VMBOpen = false;
+                IsOpen = false;
                 sys.Shutdown();
                 sys.Startup();
+                VMBOpen = true;
                 Thread.Sleep(500);
                 camera = sys.OpenCameraByID("DEV_64AA2C448F1F2349", VmbAccessModeType.VmbAccessModeFull);
                 camera.Features["ExposureTime"].FloatValue = 33000;

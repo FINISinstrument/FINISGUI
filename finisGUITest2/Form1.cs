@@ -715,7 +715,13 @@ namespace FinisGUI
                     Thread.Sleep(5000);
                     vmb.Initialize();
                 }
-                if (!vmb.IsOpen)
+                if (!vmb.VMBOpen)
+                {
+                    promptBox.Text += "Could not boot Vimba\n";
+                    promptBox.Text += "Closing PIXCI\n";
+                    PXD.pxd_PIXCIclose();
+                }
+                else if (!vmb.IsOpen)
                 {
                     promptBox.Text += "Could not boot Camera\n";
                     promptBox.Text += "Closing PIXCI\n";
