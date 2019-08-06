@@ -66,12 +66,17 @@ namespace FinisGUI
         #endregion
 
         #region Buttons
+        /// <summary>
+        /// Streams a live image to the GUI image box.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Live_Button_Click(object sender, EventArgs e)
         {
             try
             {
                 
-                if (!vmb.acquiring)
+                if (!vmb.IsAcquiring)
                 {
                     vmb.StartAcquisition();
                     promptBox.Text += "Acquisition Running\n";
@@ -99,13 +104,18 @@ namespace FinisGUI
             }
         }   //
 
+        /// <summary>
+        /// Captures a single image into frame buffer 1. Displays captured image if not live before button is hit.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Snap_Button_Click(object sender, System.EventArgs e)
         {
             try
             {
                 vmb.StartAcquisition();
 
-                if (pxd.IsStreaming)
+                if (pxd.IsStreaming)                // Pause live if needed
                 {
                     pxd.StopStreaming();
                 }
@@ -114,11 +124,11 @@ namespace FinisGUI
                     shutter.Open();
                 }
 
-                pxd.Snap();
-                ImagePictureBox.Invalidate();
+                pxd.Snap();                         // Image capture
+                ImagePictureBox.Invalidate();       // Display captured image.
                 pxd.SaveStill(pxd.imageName);
 
-                if (!pxd.IsStreaming)
+                if (!pxd.IsStreaming)               // Resume live if needed
                 {
                     shutter.Close();
                 }
@@ -137,6 +147,11 @@ namespace FinisGUI
             }
         }
 
+        /// <summary>
+        /// Records images up to the limit of the remaining disk space on the main hard drive and saves them.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Record_Button_Click(object sender, EventArgs e)
         {
             try
@@ -147,7 +162,7 @@ namespace FinisGUI
                 {
                     pxd.StopStreaming();
                 }
-                else if (!vmb.acquiring)
+                else if (!vmb.IsAcquiring)
                 {
                     vmb.StartAcquisition();
                 }
@@ -175,11 +190,11 @@ namespace FinisGUI
 
                 Timer.Reset();
                 Timer.Start();
-                for (int i = 0; i < pxd.frameCount / 400; i++)
+                for (int i = 0; i < pxd.frameCount / 400; i++)                      // Loop to capture a multiple of 400 and less than the specified frameCount number of frames.
                 {
-                    pxd.Record(1, pxd.halfBufferSize, 1);
+                    pxd.Record(1, pxd.halfBufferSize, 1);                           // Buffer is 400, halfBufferSize is 200
 
-                    Thread SAVE = new Thread(() => pxd.ThreadedSaveSetRange(1));
+                    Thread SAVE = new Thread(() => pxd.ThreadedSaveSetRange(1));    // Thread the threadedSave function, then repeat for second half of buffer
                     SAVE.Start();
 
                     pxd.Record(201, pxd.halfBufferSize, 1);
@@ -187,24 +202,24 @@ namespace FinisGUI
                     SAVE2.Start();
                 }
                 //pxd.waitForLiveSequence();
-                if (pxd.frameCountRemainder != 0)
+                if (pxd.frameCountRemainder != 0)                                   // If the specified frameCount is not a multiple of 400, record remaining frames and save them.
                 {
                     pxd.Record(1, pxd.frameCountRemainder, 1);
-                    Timer.Stop();
+                    Timer.Stop();   // Stop timer at end of capture, not end of saving.
                     pxd.SaveSet(pxd.frameCount - pxd.frameCountRemainder);
                     pxd.imagesCaptured += pxd.frameCountRemainder;
                 }
                 else Timer.Stop();
                 shutter.Close();
 
-                Thread.Sleep(2000);
+                Thread.Sleep(2000); // Wait for saving to finish before displaying final numbers
                 promptBox.Text += $"Capture Time: {(float)Timer.ElapsedMilliseconds / 1000}\n";
                 promptBox.Text += $"Images Captured: {pxd.imagesCaptured}\n";
                 fpsActual = ((pxd.imagesCaptured) / ((float)Timer.ElapsedMilliseconds / 1000));
                 promptBox.Text += $"Actual Frame Rate: {fpsActual}\n";
 
                 int j = 0;
-                StreamWriter filesMissed = new StreamWriter(pxd.folderPath + "MissedFrames.txt", true);
+                StreamWriter filesMissed = new StreamWriter(pxd.folderPath + "MissedFrames.txt", true); // For debugging, display number of missed frames and which frames they were.
                 promptBox.Text += "Frames Missed: \"";
                 filesMissed.WriteLine("Frames Missed:\n");
                 for (int i = 1; i <= pxd.frameCount; i++)
@@ -230,6 +245,11 @@ namespace FinisGUI
             }
         }   // In Progress
 
+        /// <summary>
+        /// Updates the name of single image captures
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void StillName_Button_Click(object sender, EventArgs e)
         {
             try
@@ -244,6 +264,11 @@ namespace FinisGUI
             }
         }
 
+        /// <summary>
+        /// Updates the names of sequential image captures
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void RecordName_Button_Click(object sender, EventArgs e)
         {
             try
@@ -258,11 +283,21 @@ namespace FinisGUI
             }
         }
 
+        /// <summary>
+        /// Clears the prompt box.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Clear_Button_Click(object sender, EventArgs e)
         {
             promptBox.Text = "";
         }
 
+        /// <summary>
+        /// Updates the number of frames to capture
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PicCount_Button_Click(object sender, EventArgs e)
         {
             try
@@ -330,6 +365,11 @@ namespace FinisGUI
             }
         }
 
+        /// <summary>
+        /// Toggles the frame rate of both the camera and frame grabber between 30 and 15 fps. 30 is default.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FPS_Button_Click(object sender, EventArgs e)
         {
             try
@@ -376,6 +416,11 @@ namespace FinisGUI
             }
         }   //
 
+        /// <summary>
+        /// Updates exposure time up to limits based on current frame rate. Default is max for 30 fps, or 33000 microseconds.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Exposure_Button_Click(object sender, EventArgs e)
         {
             try
@@ -400,6 +445,11 @@ namespace FinisGUI
             }
         }   //
 
+        /// <summary>
+        /// Toggles between 14-bit and 16-bit images for display only. Only 16-bit images can be saved. 16-bit is default.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Bits_Button_Click(object sender, EventArgs e)
         {
             try
@@ -412,6 +462,11 @@ namespace FinisGUI
             }
         }   //
 
+        /// <summary>
+        /// Toggles between high and low gain. High gain is default.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Gain_Button_Click(object sender, EventArgs e)
         {
             try
@@ -432,18 +487,33 @@ namespace FinisGUI
             }
         }   //
 
+        /// <summary>
+        /// Opens the shutter by calling precompiled code
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OpenShutter_Button_Click(object sender, EventArgs e)
         {
             shutter.Open();
             Shutter_Label.Text = "Open";
         }   //
 
+        /// <summary>
+        /// Closes the shutter by calling precompiled code
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CloseShutter_Button_Click(object sender, EventArgs e)
         {
             shutter.Close();
             Shutter_Label.Text = "Closed";
         }   //
 
+        /// <summary>
+        /// Locks the shutter so it will not be toggled for any function. Unlocks it if locked.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ShutterLock_Button_Click(object sender, EventArgs e)
         {
             if (!shutter.ShutterLocked)
@@ -470,6 +540,11 @@ namespace FinisGUI
             }
         }   //
 
+        /// <summary>
+        /// Empties the video folder. Deprecated, do not use. May cause unintended results. Deleted files are not recoverable.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void EmptyVideoFolder_Button_Click(object sender, EventArgs e)
         {
             try
@@ -490,6 +565,11 @@ namespace FinisGUI
             }
         }
 
+        /// <summary>
+        /// Empties the still folder. Deprecated, do not use. May cause unintended results. Deleted files are not recoverable.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void EmptyStillFolder_Button_Click(object sender, EventArgs e)
         {
             try
@@ -509,7 +589,12 @@ namespace FinisGUI
                 promptBox.Text += $"{ex.Message}\n Check Still Image Folder\n{Constants.stillPath}\n";
             }
         }
-
+        
+        /// <summary>
+        /// Locks the reinitialize button due to the high amount of wait time the reinitialize button may inadvertantly cause.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LockReinitialize_Button_Click(object sender, EventArgs e)
         {
             if (restartLocked)
@@ -528,6 +613,11 @@ namespace FinisGUI
             }
         }
 
+        /// <summary>
+        /// Closes the camera, vimba, and the frame grabber, and reinitializes them to default settings. Takes about a minute to complete.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ReinitializeSystem_Button_Click(object sender, EventArgs e)
         {
             try
@@ -539,39 +629,33 @@ namespace FinisGUI
                         shutter.Close();
                         Shutter_Label.Text = "Closed";
                     }
-                    if (vmb.acquiring)
+                    if (vmb.IsAcquiring)
                     {
                         vmb.StartAcquisition();
                     }
                     vmb.Close();
                     Thread.Sleep(100);
-                    vmb.Initialize();
+
+                    int i = vmb.Initialize();
+                    if (i < 0)
+                    {
+                        MessageBox.Show("Camera Open Failed");
+                        Application.Exit();
+                    }
 
                     string FORMAT = "";
                     string FORMATFILE = "";
                     FORMATFILE = $"{Constants.projectPath}Resources/XCAPVideoSetup16Bit30Hz.fmt";
                     PXD.pxd_PIXCIclose();
                     Thread.Sleep(100);
-                    int i = PXD.pxd_PIXCIopen("", FORMAT, FORMATFILE);
+                    i = PXD.pxd_PIXCIopen("", FORMAT, FORMATFILE);
                     Thread.Sleep(100);
                     if (i < 0)
                     {
-                        MessageBox.Show("Open Failed");
+                        MessageBox.Show("PXD Open Failed");
                         PXD.pxd_mesgFault(1);
                         Application.Exit();
                     }
-
-                    /*cameras = sys.Cameras;
-                    promptBox.Text += "Vimba Restarted\n";
-                    camera = sys.OpenCameraByID("DEV_64AA2C448F1F2349", VmbAccessModeType.VmbAccessModeFull);
-                    promptBox.Text += "Camera Opened\n";
-                    feature = camera.Features["ExposureTime"];
-                    feature.FloatValue = 33000;
-                    feature = camera.Features["AcquisitionFrameRate"];
-                    feature.FloatValue = 30.0f;
-                    camera.Features["SensorGain"].EnumValue = "Gain1";
-                    camera.Features["SensorTemperatureSetpointValue"].IntValue = 20;
-                    camera.Features["SensorTemperatureSetpointSelector"].IntValue = 1;*/
 
                     promptBox.Text += "System Fully Booted\n";
                     restartLocked = true;
@@ -590,6 +674,11 @@ namespace FinisGUI
             }
         }
 
+        /// <summary>
+        /// Produces an info file about the most recent collection. Deprecated, do not use.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void InfoFile_Button_Click(object sender, EventArgs e)
         {
             try
@@ -608,6 +697,11 @@ namespace FinisGUI
             }
         }
 
+        /// <summary>
+        /// Deprecated, do not use. Appends same information from InfoFile_Button onto the end of each image in the most recent collection.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AppendImages_Button_Click(object sender, EventArgs e)
         {
             try
@@ -655,6 +749,11 @@ namespace FinisGUI
             }
         }
 
+        /// <summary>
+        /// Checks for discontinuities in the most recent collection. Deprecated, do not use.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ContinuityCheck_Button_Click(object sender, EventArgs e)
         {
             int j = 0;
@@ -673,12 +772,17 @@ namespace FinisGUI
         #endregion
         
         #region Other Functions
+        /// <summary>
+        /// This function executes as the program loads. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Form1_Load(object sender, System.EventArgs e)
         {
             try
             {
-                shutter.Close();
-                pxd.IsSixteenBit = true;
+                shutter.Close();            // Calls the precompiled CloseShutter.exe program
+                pxd.IsSixteenBit = true;    //Default function parameters
                 vmb.exposureTime = 33000;
                 vmb.highGain = true;
 
@@ -687,21 +791,21 @@ namespace FinisGUI
                 pxd.frameCount = 40;
                 pxd.frameCountRemainder = 0;
 
-                info[1] = "TempSetPoint\tCamTemp\tExposure\tGain\tFrameRate";
-                while (File.Exists($"{Constants.infoPath}VideoInfo/info{infoFiles}.txt"))
+                //info[1] = "TempSetPoint\tCamTemp\tExposure\tGain\tFrameRate";
+                /*while (File.Exists($"{Constants.infoPath}VideoInfo/info{infoFiles}.txt"))
                 {
                     infoFiles++;
-                }
+                }*/
 
                 pxd.Close(); // In case the DLL was run before and aborted without closing
                 pxd.Initialize();
 
-                if (!pxd.IsOpen)
+                if (!pxd.IsOpen)        // Double check that pxd opened successfully
                 {
                     Thread.Sleep(5000);
                     pxd.Initialize();
                 }
-                if (!pxd.IsOpen)
+                if (!pxd.IsOpen)        // Abort if frame grabber fails to initialize
                 {
                     MessageBox.Show("Open Failed, Possible Frame Grabber Malfunction\n" +
                         "If you get this message repeatedly, restart Windows");
@@ -709,11 +813,18 @@ namespace FinisGUI
                     Application.Exit();
                 }
 
-                promptBox.Text += $"{vmb.Initialize()}";
+                //promptBox.Text += $"{vmb.Initialize()}";
+                vmb.Initialize();
+
                 if (!vmb.IsOpen)
                 {
-                    Thread.Sleep(5000);
-                    vmb.Initialize();
+                    Thread.Sleep(1000);
+                    int i = vmb.Initialize();
+                    if (i < 0)
+                    {
+                        MessageBox.Show("Camera Open Failed");
+                        Application.Exit();
+                    }
                 }
                 if (!vmb.VMBOpen)
                 {
@@ -738,6 +849,11 @@ namespace FinisGUI
             }
         }   //
 
+        /// <summary>
+        /// This function executes when the program closes.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Form1_Closed(object sender, System.EventArgs e)
         {
             try
@@ -755,12 +871,17 @@ namespace FinisGUI
             }
         }   //
 
+        /// <summary>
+        /// Refreshes the live image if Timer1 is active. Otherwise this function is ignored.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Timer1_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             try
             {
                 // If Live and captured image has changed then update the window
-                if (pxd.IsStreaming && LastCapturedField != PXD.pxd_capturedFieldCount(1))
+                if (pxd.IsStreaming && LastCapturedField != PXD.pxd_capturedFieldCount(1))  // Double checks the live conditions
                 {
                     LastCapturedField = PXD.pxd_capturedFieldCount(1);
                     ImagePictureBox.Invalidate();
@@ -772,6 +893,11 @@ namespace FinisGUI
             }
         }
 
+        /// <summary>
+        /// Prepares the image frame and formats pixci's frames for displaying images for live stream.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ImagePictureBox_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
         {
             // Create a local version of the graphics object for the PictureBox.
@@ -785,6 +911,9 @@ namespace FinisGUI
             Draw.ReleaseHdc(hDC); // Release ImagePictureBox handle.
         }
 
+        /// <summary>
+        /// Saves images in buffers 1-200. Intended to be done on a separate thread than the one recording into the frame buffer.
+        /// </summary>
         private void ThreadedSave()
         {
             try
@@ -800,6 +929,9 @@ namespace FinisGUI
             }
         }
 
+        /// <summary>
+        /// Saves images in buffers 201-400. Intended to be done on a separate thread than the one recording into the frame buffer.
+        /// </summary>
         private void ThreadedSave2()
         {
             try
@@ -816,119 +948,52 @@ namespace FinisGUI
             }
         }
 
-        /*private void StartAcquisition()
-        {
-            if (!acquiring)
-            {
-                try
-                {
-                    features = camera.Features;
-                    feature = features["AcquisitionStart"];
-                    feature.RunCommand();
-                    promptBox.Text += "Acquisition Running\n";
-                    acquiring = true;
-                }
-                catch (VimbaException ve)
-                {
-                    promptBox.Text += $"{ve.Message}";
-                }
-                catch (Exception ex)
-                {
-                    promptBox.Text += $"{ex.Message}\n";
-                }
-            }
-            Thread.Sleep(100);
-        }*/
-
-        /*private void ToggleBits()
-        {
-            try
-            {
-                if (pxd.Live)
-                {
-                    PXD.pxd_goUnLive(1);
-                }
-                if (pxd.SixteenBit)
-                {
-                    Bits_Label.Text = "14-bit";
-                    if (fps == 15.0f)
-                    {
-                        string FORMAT = "";
-                        string FORMATFILE = "";
-                        FORMATFILE = "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup14Bit15Hz.fmt";
-                        PXD.pxd_PIXCIclose();
-                        Thread.Sleep(100);
-                        PXD.pxd_PIXCIopen("", FORMAT, FORMATFILE);
-                        Thread.Sleep(100);
-                    }
-                    else
-                    {
-                        string FORMAT = "";
-                        string FORMATFILE = "";
-                        FORMATFILE = "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup14Bit30Hz.fmt";
-                        PXD.pxd_PIXCIclose();
-                        Thread.Sleep(100);
-                        PXD.pxd_PIXCIopen("", FORMAT, FORMATFILE);
-                        Thread.Sleep(100);
-                    }
-                }
-                else
-                {
-                    Bits_Label.Text = "16-bit";
-                    if (fps == 15.0f)
-                    {
-                        string FORMAT = "";
-                        string FORMATFILE = "";
-                        FORMATFILE = "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup16Bit15Hz.fmt";
-                        PXD.pxd_PIXCIclose();
-                        Thread.Sleep(100);
-                        PXD.pxd_PIXCIopen("", FORMAT, FORMATFILE);
-                        Thread.Sleep(100);
-                    }
-                    else
-                    {
-                        string FORMAT = "";
-                        string FORMATFILE = "";
-                        FORMATFILE = "c:/FINIS/FINISGUI/finisGUITest2/Resources/XCAPVideoSetup16Bit30Hz.fmt";
-                        PXD.pxd_PIXCIclose();
-                        Thread.Sleep(100);
-                        PXD.pxd_PIXCIopen("", FORMAT, FORMATFILE);
-                        Thread.Sleep(100);
-                    }
-                }
-                if (pxd.Live)
-                {
-                    PXD.pxd_goLive(1, 1);
-                }
-                Thread.Sleep(100);
-            }
-            catch
-            {
-                // ...
-            }
-        }*/
-
+        /// <summary>
+        /// Makes PicCount_Button executable upon hitting the 'Enter' key.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PicCount_TextBox_TextChanged(object sender, EventArgs e)
         {
             AcceptButton = PicCount_Button;
         }
 
+        /// <summary>
+        /// Makes Exposure_Button executable upon hitting the 'Enter' key.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Exposure_TextBox_TextChanged(object sender, EventArgs e)
         {
             AcceptButton = Exposure_Button;
         }
 
+        /// <summary>
+        /// Makes RecordName_Button executable upon hitting the 'Enter' key.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void RecordName_textBox_TextChanged(object sender, EventArgs e)
         {
             AcceptButton = RecordName_Button;
         }
 
+        /// <summary>
+        /// Makes StillName_Button executable upon hitting the 'Enter' key.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void StillName_textBox_TextChanged(object sender, EventArgs e)
         {
             AcceptButton = StillName_Button;
         }
         #endregion
 
+        /// <summary>
+        /// Not a finished button. Used for testing only.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Useless_Button_Click(object sender, EventArgs e)
         {
             //Initialize the sensor port
